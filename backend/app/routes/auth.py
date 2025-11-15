@@ -3,10 +3,11 @@ from flask_jwt_extended import (
   jwt_required, get_jwt_identity, unset_jwt_cookies
 )
 from flask import Blueprint, request, jsonify
-from .models import User
+from .models import User, Portfolio
 from .extensions import db
-from .schemas import login_schema
+from .schemas import login_schema, user_schema
 from marshmallow import ValidationError
+from sqlalchemy import or_
 
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -15,17 +16,28 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 @auth_bp.post("/register")
 def register():
-  try: 
-    data = login_schema.load(request.get_json())
+  try:
+    data = user_schema.load(request.get_json())
   except ValidationError:
-    return jsonify({'error':'username and password required'}), 400
+    return jsonify({'error':'username, email, and password required'}), 400
   username = data.get('username')
+  email = data.get('email')
   password = data.get('password')
-  user = User.query.filter_by(username=username).first()
+  user = User.query.filter(or_(User.username == username, User.email == email)).first()
   if user:
-    return jsonify({'error':'username already exists'}), 409
+    if user.username == username:
+      return jsonify({'error': 'username already exists'}), 409
+    if user.email == email:
+      return jsonify({'error': 'email already exists'}), 409
   user = User(username=username)
   user.set_password(password)
+
+  initial_balance = 100000.00
+  user.portfolio = Portfolio(
+    total_deposited=initial_balance,
+    balance=initial_balance,
+  )
+
   db.session.add(user)
   db.session.commit()
   db.session.refresh(user)
@@ -37,13 +49,13 @@ def login():
   try:
     data = login_schema.load(request.get_json())
   except ValidationError:
-    return jsonify({'error':'username and password required'}), 400
+    return jsonify({'error':'username/email and password required'}), 400
   
-  username = data.get('username')
+  identifier = data.get('identifier')
   password = data.get('password')
-  user = User.query.filter_by(username=username).first()
+  user = User.query.filter(or_(User.username == identifier, User.email == identifier)).first()
   if not user or not user.check_password(password):
-      return jsonify({'error':'bad credentials'}), 401
+    return jsonify({'error':'bad credentials'}), 401
   
   access = create_access_token(identity=user.id)
   refresh = create_refresh_token(identity=user.id)

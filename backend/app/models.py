@@ -18,12 +18,12 @@ class User(db.Model):
 
   def check_password(self, password):
     return check_password_hash(self.password_hash, password)
-
+  
 class Portfolio(db.Model):
   id = mapped_column(Integer, primary_key=True)
   total_deposited = mapped_column(Float, nullable=False)
   balance = mapped_column(Float, nullable=False)
-  user_id = mapped_column(Integer, ForeignKey('user.id'), nullable=False)
+  user_id = mapped_column(Integer, ForeignKey('user.id'), unique=True, nullable=False)
   
   user = relationship('User',back_populates='portfolio')
   holdings = relationship(
