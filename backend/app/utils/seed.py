@@ -1,0 +1,1 @@
+# add all stock symbols to the db

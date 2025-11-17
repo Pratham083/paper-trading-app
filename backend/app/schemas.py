@@ -27,7 +27,7 @@ class HoldingSchema(Schema):
   id = fields.Int(dump_only=True)
   quantity = fields.Float(required=True)
   stock_id = fields.Int(required=True)
-  portfolio_id = fields.Int(required=True)
+  portfolio_id = fields.Int(dump_only=True)
   stock = fields.Nested(StockSchema, dump_only=True)
 holding_schema = HoldingSchema()
 

@@ -1,8 +1,8 @@
 from flask import Flask
-from .extensions import db, jwt
-from .config import DevConfig
-from .errors import register_error_handlers
-from .routes import register_routes
+from app.extensions import db, jwt
+from app.config import DevConfig
+from app.errors import register_error_handlers
+from app.routes import register_routes
 
 def create_app():
   app = Flask(__name__)

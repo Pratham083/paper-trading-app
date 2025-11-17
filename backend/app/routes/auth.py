@@ -3,12 +3,11 @@ from flask_jwt_extended import (
   jwt_required, get_jwt_identity, unset_jwt_cookies
 )
 from flask import Blueprint, request, jsonify
-from .models import User, Portfolio
-from .extensions import db
-from .schemas import login_schema, user_schema
+from app.models import User, Portfolio
+from app.extensions import db
+from app.schemas import login_schema, user_schema
 from marshmallow import ValidationError
 from sqlalchemy import or_
-
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
