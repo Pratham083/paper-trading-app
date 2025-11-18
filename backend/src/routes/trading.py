@@ -3,10 +3,10 @@ from flask_jwt_extended import (
   jwt_required, get_jwt_identity, unset_jwt_cookies
 )
 from flask import Blueprint, request, jsonify
-from .models import User, Portfolio, Holding, Stock
-from .extensions import db
-from .schemas import user_schema, portfolio_schema, holding_schema, stock_schema
-from utils.fetch_stock_data import fetch_stock_history
+from src.models import User, Portfolio, Holding, Stock
+from src.extensions import db
+from src.schemas import user_schema, portfolio_schema, holding_schema, stock_schema
+from src.utils.fetch_stock_data import fetch_stock_history
 from marshmallow import ValidationError
 
 trading_bp = Blueprint("trading", __name__, url_prefix="/api")
@@ -132,9 +132,11 @@ def get_stock_history(symbol):
   if stock is None:
     return jsonify({'error': 'stock symbol not found'}), 404
 
-  stock.refresh_data()
+  try:
+    history = fetch_stock_history(symbol, period)
+  except Exception as e:
+    return jsonify({'error':str(e)}), 503
 
-  history = fetch_stock_history(symbol, period)
   if history is None or not history.get('date') or not history.get('price'):
     return jsonify({'error': 'stock historical data unavailable'}), 503
 

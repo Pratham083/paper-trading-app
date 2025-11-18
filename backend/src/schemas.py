@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields, validate, post_load
-from app.models import User, Portfolio, Holding, Stock
+from src.models import User, Portfolio, Holding, Stock
 
 class StockSchema(Schema):
   id = fields.Int(dump_only=True)
@@ -8,6 +8,7 @@ class StockSchema(Schema):
   country = fields.Str(allow_none=True)
   industry = fields.Str(allow_none=True)
   sector = fields.Str(allow_none=True)
+  exchange = fields.Str(allow_none=True)
   last_sale = fields.Float(allow_none=True)
   high = fields.Float(allow_none=True)
   low = fields.Float(allow_none=True)

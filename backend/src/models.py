@@ -2,8 +2,8 @@ from sqlalchemy.orm import mapped_column, relationship
 from sqlalchemy import String, Integer, DateTime, ForeignKey, Float, BigInteger
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timezone, timedelta
-from .extensions import db
-from app.utils.fetch_stock_data import fetch_stock_details
+from src.extensions import db
+from src.utils.fetch_stock_data import fetch_stock_details
 
 class User(db.Model):
   id = mapped_column(Integer, primary_key=True)
@@ -47,10 +47,11 @@ class Stock(db.Model):
 
   symbol = mapped_column(String(10), unique=True, nullable=False)
 
-  company = mapped_column(String(100), nullable=True)
+  company = mapped_column(String(500), nullable=True)
   country = mapped_column(String(100), nullable=True)
   industry = mapped_column(String(100), nullable=True)
   sector = mapped_column(String(100), nullable=True)
+  exchange = mapped_column(String(100), nullable=True)
 
   last_sale = mapped_column(Float, nullable=True)
   high = mapped_column(Float, nullable=True)
@@ -75,7 +76,7 @@ class Stock(db.Model):
 
   def refresh_data(self):
     # refresh if older than 1 hour
-    if datetime.now(timezone.utc) - self.last_updated > timedelta(hours=1):
+    if datetime.now(timezone.utc) - self.last_updated > timedelta(hours=1) or self.last_sale is None:
       stock_data = fetch_stock_details(self.symbol)
 
       for key, value in stock_data.items():

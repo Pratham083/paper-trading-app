@@ -1,8 +1,9 @@
 from flask import Flask
-from app.extensions import db, jwt
-from app.config import DevConfig
-from app.errors import register_error_handlers
-from app.routes import register_routes
+from src.extensions import db, jwt
+from src.config import DevConfig
+from src.errors import register_error_handlers
+from src.routes import register_routes
+from flask_migrate import Migrate
 
 def create_app():
   app = Flask(__name__)
@@ -10,6 +11,8 @@ def create_app():
   app.config.from_object(DevConfig)
 
   db.init_app(app)
+  migrate = Migrate(app, db)
+
   jwt.init_app(app)
 
   register_routes(app)
@@ -20,6 +23,4 @@ def create_app():
 
 if __name__ == "__main__":
   app = create_app()
-  with app.app_context():
-    db.create_all()
   app.run(debug=True)
