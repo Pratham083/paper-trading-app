@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from src.extensions import db, jwt
 from src.config import DevConfig
 from src.errors import register_error_handlers
@@ -12,12 +13,16 @@ def create_app():
 
   db.init_app(app)
   migrate = Migrate(app, db)
-
   jwt.init_app(app)
 
   register_routes(app)
-
   register_error_handlers(app)
+
+  CORS(
+    app,
+    supports_credentials=True,
+    origins=["http://localhost:5173"]
+  )
 
   return app
 

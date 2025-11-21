@@ -9,7 +9,7 @@ class User(db.Model):
   id = mapped_column(Integer, primary_key=True)
   username = mapped_column(String(50), unique=True, nullable=False)
   email = mapped_column(String(50), unique=True, nullable=False)
-  password_hash = mapped_column(String(100), nullable=False)
+  password_hash = mapped_column(String(256), nullable=False)
   created_at = mapped_column(DateTime, default=datetime.now(timezone.utc))
   portfolio = relationship('Portfolio',back_populates='user',uselist=False, cascade='all, delete-orphan')
   
@@ -69,13 +69,12 @@ class Stock(db.Model):
   ipo_year = mapped_column(Integer, nullable=True)
 
   last_updated = mapped_column(
-    DateTime,
+    DateTime(timezone=True),
     default=lambda: datetime.now(timezone.utc),
     nullable=False
   )
 
   def refresh_data(self):
-    # refresh if older than 1 hour
     if datetime.now(timezone.utc) - self.last_updated > timedelta(hours=1) or self.last_sale is None:
       stock_data = fetch_stock_details(self.symbol)
 

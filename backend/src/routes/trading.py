@@ -1,6 +1,6 @@
 from flask_jwt_extended import (
   create_access_token, create_refresh_token, set_access_cookies,  set_refresh_cookies,
-  jwt_required, get_jwt_identity, unset_jwt_cookies
+  jwt_required, get_jwt_identity, unset_jwt_cookies, verify_jwt_in_request
 )
 from flask import Blueprint, request, jsonify
 from src.models import User, Portfolio, Holding, Stock
@@ -123,15 +123,13 @@ def get_stock_details(symbol):
   stock.refresh_data()
   return jsonify(stock_schema.dump(stock)), 200
 
-#stock/historical/<id>?period='1d'
-@trading_bp.get('/stock/details/<symbol>')
+@trading_bp.get('/stock/historical/<symbol>')
 def get_stock_history(symbol):
   period = request.args.get('period', '1d')
   symbol = symbol.upper()
   stock = Stock.query.filter_by(symbol=symbol).first()
   if stock is None:
     return jsonify({'error': 'stock symbol not found'}), 404
-
   try:
     history = fetch_stock_history(symbol, period)
   except Exception as e:

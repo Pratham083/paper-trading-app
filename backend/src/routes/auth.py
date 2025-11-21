@@ -2,7 +2,7 @@ from flask_jwt_extended import (
   create_access_token, create_refresh_token, set_access_cookies,  set_refresh_cookies,
   jwt_required, get_jwt_identity, unset_jwt_cookies
 )
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from src.models import User, Portfolio
 from src.extensions import db
 from src.schemas import login_schema, user_schema
@@ -28,7 +28,7 @@ def register():
       return jsonify({'error': 'username already exists'}), 409
     if user.email == email:
       return jsonify({'error': 'email already exists'}), 409
-  user = User(username=username)
+  user = User(username=username, email=email)
   user.set_password(password)
 
   initial_balance = 100000.00
@@ -41,7 +41,7 @@ def register():
   db.session.commit()
   db.session.refresh(user)
 
-  return jsonify({'id':user.id,'username':user.username}), 201
+  return jsonify({'id':user.id,'username':user.username,'email':user.email}), 201
 
 @auth_bp.post("/login")
 def login():
@@ -56,12 +56,13 @@ def login():
   if not user or not user.check_password(password):
     return jsonify({'error':'bad credentials'}), 401
   
-  access = create_access_token(identity=user.id)
-  refresh = create_refresh_token(identity=user.id)
+  access = create_access_token(identity=str(user.id))
+  refresh = create_refresh_token(identity=str(user.id))
 
   resp = jsonify({'message': 'logged in'})
+  
   set_access_cookies(resp, access)
-  set_refresh_cookies(resp, refresh)  
+  set_refresh_cookies(resp, refresh)
 
   return resp, 200
 

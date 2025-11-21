@@ -12,7 +12,6 @@ class Config:
     "DATABASE_URL",
     "postgresql+psycopg2://postgres:postgres@localhost:5432/paper_trading_db"
   )
-  #myuser:password
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 
   JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-jwt-secret")
