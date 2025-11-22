@@ -31,6 +31,7 @@ def seed_json(filepath, exchange):
     except Exception as e:
       db.session.rollback()
       print(f'failed to insert item {item}: {e}')
+      break
   try:
     db.session.commit()
     print(f'Success. inserted {filepath} data')

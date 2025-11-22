@@ -11,7 +11,12 @@ from marshmallow import ValidationError
 
 trading_bp = Blueprint("trading", __name__, url_prefix="/api")
 
-@trading_bp.get("/portfolio")
+@trading_bp.before_request
+def handle_options():
+  if request.method == "OPTIONS":
+    return '', 200
+
+@trading_bp.get("/portfolio",)
 @jwt_required()
 def get_portfolio():
   user_id = get_jwt_identity()
@@ -22,7 +27,7 @@ def get_portfolio():
   portfolio_json = portfolio_schema.dump(portfolio)
   return jsonify(portfolio_json), 200
 
-@trading_bp.post('/holding/buy')
+@trading_bp.route('/holding/buy', methods=['POST','OPTIONS'])
 @jwt_required()
 def buy_stock():
   user_id = get_jwt_identity()
@@ -66,7 +71,7 @@ def buy_stock():
   return jsonify({'message':'stock purchased successfully'}), 200
 
 
-@trading_bp.post('/holding/sell')
+@trading_bp.route('/holding/sell', methods=['POST','OPTIONS'])
 @jwt_required()
 def sell_stock():
   user_id = get_jwt_identity()

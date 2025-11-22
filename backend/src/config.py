@@ -20,7 +20,7 @@ class Config:
   JWT_REFRESH_COOKIE_PATH = "/auth/refresh"
   JWT_COOKIE_SAMESITE = "Lax"
   JWT_COOKIE_HTTPONLY = True
-  JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=15)
+  JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=30)
   JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
 class DevConfig(Config):

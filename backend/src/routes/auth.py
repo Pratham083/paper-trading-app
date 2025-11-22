@@ -81,3 +81,10 @@ def logout():
   resp = jsonify({"message": "logged out"})
   unset_jwt_cookies(resp)
   return resp, 200
+
+@auth_bp.post('/check')
+def check():
+  user = get_jwt_identity()
+  if user:
+    return {"authenticated": True}, 200
+  return {"authenticated": False}, 200

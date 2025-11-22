@@ -15,14 +15,15 @@ def create_app():
   migrate = Migrate(app, db)
   jwt.init_app(app)
 
-  register_routes(app)
-  register_error_handlers(app)
-
   CORS(
     app,
     supports_credentials=True,
     origins=["http://localhost:5173"]
   )
+  
+  register_routes(app)
+  register_error_handlers(app)
+
 
   return app
 

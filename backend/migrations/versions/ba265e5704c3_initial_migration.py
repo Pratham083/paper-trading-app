@@ -1,8 +1,8 @@
-"""initial migration
+"""Initial migration
 
-Revision ID: 2703b59d8a32
+Revision ID: ba265e5704c3
 Revises: 
-Create Date: 2025-11-17 20:53:27.344291
+Create Date: 2025-11-21 17:43:12.005921
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2703b59d8a32'
+revision = 'ba265e5704c3'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,7 +21,7 @@ def upgrade():
     op.create_table('stock',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('symbol', sa.String(length=10), nullable=False),
-    sa.Column('company', sa.String(length=100), nullable=True),
+    sa.Column('company', sa.String(length=500), nullable=True),
     sa.Column('country', sa.String(length=100), nullable=True),
     sa.Column('industry', sa.String(length=100), nullable=True),
     sa.Column('sector', sa.String(length=100), nullable=True),
@@ -38,7 +38,7 @@ def upgrade():
     sa.Column('revenue', sa.BigInteger(), nullable=True),
     sa.Column('debt', sa.BigInteger(), nullable=True),
     sa.Column('ipo_year', sa.Integer(), nullable=True),
-    sa.Column('last_updated', sa.DateTime(), nullable=False),
+    sa.Column('last_updated', sa.DateTime(timezone=True), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('symbol')
     )
@@ -46,7 +46,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=50), nullable=False),
     sa.Column('email', sa.String(length=50), nullable=False),
-    sa.Column('password_hash', sa.String(length=100), nullable=False),
+    sa.Column('password_hash', sa.String(length=256), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
