@@ -2,7 +2,7 @@ def test_get_portfolio(auth_client, test_user):
   resp = auth_client.get("/api/portfolio")
   assert resp.status_code == 200
   data = resp.get_json()
-  assert data['balance'] == 100000
+  assert data['portfolio']['balance'] == 100000
 
 def test_buy_stock(auth_client, test_user, sample_stock):
   resp = auth_client.post("/api/holding/buy", json={

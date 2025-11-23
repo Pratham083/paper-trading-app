@@ -20,12 +20,9 @@ def handle_options():
 @jwt_required()
 def get_portfolio():
   user_id = get_jwt_identity()
-  portfolio = Portfolio.query.filter_by(user_id=user_id).first()
-  if not portfolio:
-    return jsonify({'error':'user does not have a portfolio'}), 404
-  
-  portfolio_json = portfolio_schema.dump(portfolio)
-  return jsonify(portfolio_json), 200
+  user = User.query.get(user_id)
+  user_json = user_schema.dump(user)
+  return jsonify(user_json), 200
 
 @trading_bp.route('/holding/buy', methods=['POST','OPTIONS'])
 @jwt_required()
@@ -68,7 +65,10 @@ def buy_stock():
     db.session.add(newHolding)
   db.session.commit()
   
-  return jsonify({'message':'stock purchased successfully'}), 200
+  return jsonify({
+    'message':'stock purchased successfully',
+    'quantity': quantity,
+    'symbol': stock.symbol}), 200
 
 
 @trading_bp.route('/holding/sell', methods=['POST','OPTIONS'])
@@ -110,8 +110,10 @@ def sell_stock():
     db.session.delete(holding)
   db.session.commit()
   
-  return jsonify({'message':'stock sold successfully'}), 200
-
+  return jsonify({
+    'message':'stock sold successfully',
+    'quantity': quantity,
+    'symbol': stock.symbol}), 200
 #stock/all (sends to client for search, only symbol and company)
 @trading_bp.get('/stock/all')
 def get_all_stocks():

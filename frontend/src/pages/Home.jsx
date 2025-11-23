@@ -11,7 +11,7 @@ const Home = () => {
     holdings: [],
     username: "",
     balance: 0,
-    net_deposited: 0,
+    total_deposited: 0,
     net: 0,
   });
 
@@ -21,13 +21,14 @@ const Home = () => {
         try {
           const res = await api.get("/api/portfolio");
           const data = res.data;
+          const portfolio = data.portfolio;
 
           setUser({
-            username: data.user,
-            balance: data.balance,
-            net_deposited: data.net_deposited,
-            net: data.balance - data.net_deposited,
-            holdings: data.holdings,
+            username: data.username,
+            balance: portfolio.balance,
+            total_deposited: portfolio.total_deposited,
+            net: getNet(portfolio),
+            holdings: portfolio.holdings,
           });
         } catch (e) {
           console.log("Error fetching user profile", e.response?.data);
@@ -37,10 +38,19 @@ const Home = () => {
 
     getProfile();
   }, []);
-
+  const getNet = (portfolio) => {
+    const holdings = portfolio.holdings;
+    const balance = portfolio.balance;
+    const total_deposited = portfolio.total_deposited;
+    let assetValue = 0;
+    holdings.forEach((holding) => {
+      assetValue += (holding.quantity * holding.stock.last_sale);
+    })
+    return total_deposited - (balance + assetValue);
+  }
   const percent =
-    user.net_deposited !== 0
-      ? Math.round((user.net * 100) / user.net_deposited)
+    user.total_deposited !== 0
+      ? Math.round((user.net * 100) / user.total_deposited)
       : 0;
 
   return (
@@ -62,10 +72,10 @@ const Home = () => {
               <span className="text-text font-medium">Net: </span>
               <span
                 className={`font-semibold ${
-                  user.net >= 0 ? "text-green-600" : "text-red-600"
+                  user.net >= -0.01 ? "text-green-600" : "text-red-600"
                 }`}
               >
-                {user.net >= 0 ? "+" : "-"}$
+                {user.net >= -0.01 ? "+" : "-"}$
                 {Math.abs(user.net).toFixed(2)} ({percent}%)
               </span>
             </h4>

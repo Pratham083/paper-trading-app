@@ -47,13 +47,13 @@ function StockForm({ stock, action }) {
           quantity,
         });
       } else {
-        res = await api.put(`/api/holding/sell`, {
+        res = await api.post(`/api/holding/sell`, {
           stock_id: stock,
           quantity,
         });
       }
-
-      const msg = `Success: You now have ${res.data.quantity} shares of ${stock}!`;
+      const verb = action == 'buy'?'purchased':'sold';
+      const msg = `Success: You have ${verb} ${res.data.quantity} shares of ${res.data.symbol}!`;
       showToast(msg, 'success');
     } catch (err) {
       let msg = '';
