@@ -1,5 +1,5 @@
 from sqlalchemy.orm import mapped_column, relationship
-from sqlalchemy import String, Integer, DateTime, ForeignKey, Float, BigInteger
+from sqlalchemy import String, Integer, DateTime, ForeignKey, Float, BigInteger, text, Index
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timezone, timedelta
 from src.extensions import db
@@ -36,11 +36,14 @@ class Portfolio(db.Model):
 class Holding(db.Model):
   id = mapped_column(Integer, primary_key=True)
   quantity = mapped_column(Float, nullable=False)
-  stock_id = mapped_column(Integer, ForeignKey('stock.id'), nullable=False)
-  portfolio_id = mapped_column(Integer, ForeignKey('portfolio.id'), nullable=False)
+  book_cost = mapped_column(Float, nullable=False)
+  stock_id = mapped_column(Integer, ForeignKey('stock.id'), nullable=False, index=True)
+  portfolio_id = mapped_column(Integer, ForeignKey('portfolio.id'), nullable=False, index=True)
   
   portfolio = relationship('Portfolio',back_populates='holdings')
   stock = relationship('Stock')
+
+  __table_args__ = (Index("idx_holding_portfolio_stock", "portfolio_id", "stock_id"),)
 
 class Stock(db.Model):
   id = mapped_column(Integer, primary_key=True)

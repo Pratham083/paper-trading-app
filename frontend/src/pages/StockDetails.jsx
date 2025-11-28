@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import StockChart from '../components/StockChart/StockChart';
 import StockForm from '../components/StockForm/StockForm';
 import { useParams } from 'react-router-dom';
+import { useAuth } from "../components/AuthContext/AuthContext";
 import api from '../api';
 
 export default function StockDetails() {
-  const { symbol } = useParams();
+  const {isAuthenticated} = useAuth();
+  const {symbol} = useParams();
   const [timeframe, setTimeframe] = useState('1d');
   const [data, setData] = useState(null);
   const [details, setDetails] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [holdings, setHoldings] = useState(null);
 
-  // Fetch chart data
   useEffect(() => {
     const fetchData = async () => {
       if (!symbol) return;
@@ -42,7 +44,6 @@ export default function StockDetails() {
     fetchData();
   }, [symbol, timeframe]);
 
-  // Fetch stock details (ONCE)
   useEffect(() => {
     const fetchDetails = async () => {
       if (!symbol) return;
@@ -53,9 +54,33 @@ export default function StockDetails() {
         setDetails(null);
       }
     };
-
     fetchDetails();
   }, [symbol]);
+
+  useEffect(() => {
+    const fetchHoldings = async () => {
+      if (!isAuthenticated || !details) return;
+
+      try {
+        const res = await api.get(`/api/holding/stock/${details.id}`);
+
+        if (res.status === 200) {
+          const holding = res.data.holding;
+          setHoldings({
+            'quantity':holding.quantity,
+            'book_cost':holding.book_cost,
+            'avg_price':holding.book_cost/holding.quantity,
+            'total_value':holding.quantity*details.last_sale,
+          });
+        } else {
+          setHoldings(null);
+        }
+      } catch (e) {
+        setHoldings(null);
+      }
+    };
+    fetchHoldings();
+  }, [details, isAuthenticated]);
 
   return (
     <div className="min-h-screen p-8 bg-background text-text">
@@ -120,20 +145,33 @@ export default function StockDetails() {
             )}
           </div>
         </div>
+        {holdings &&
+          <div className="bg-secondary rounded-xl p-6 shadow-md border border-secondary/20">
+            <h2 className="text-xl font-semibold mb-4">Metrics</h2>
+              <div className="space-y-2 text-sm">
+                <p><strong>{holdings.quantity} shares</strong> ${holdings.total_value}</p>
+                <p><strong>Book cost:</strong> ${holdings.book_cost}</p>
+                <p><strong>Average Price:</strong> ${holdings.avg_price}</p>
+                <p><strong>Total return: </strong> 
+                  ${holdings.total_value-holdings.book_cost} ({100*(holdings.total_value-holdings.book_cost)/holdings.book_cost})%
+                </p>
+              </div>
+          </div>
+        }
+
         {details &&
         <div className="mt-8 space-y-6">
           <div className="bg-secondary rounded-xl p-6 shadow-md">
             Buy Shares
-            <StockForm stock={details.id} action="buy" />
+            <StockForm stock={details.id} action="buy" setHoldings={setHoldings} />
           </div>
 
           <div className="bg-secondary rounded-xl p-6 shadow-md">
             Sell Shares
-            <StockForm stock={details.id} action="sell" />
+            <StockForm stock={details.id} action="sell" setHoldings={setHoldings} />
           </div>
         </div>
         }
-
       </div>
     </div>
   );

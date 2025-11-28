@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api';
 import { useAuth } from '../AuthContext/AuthContext';
 
-function StockForm({ stock, action }) {
+function StockForm({ stock, action, setHoldings }) {
   const { isAuthenticated } = useAuth();
   const [quantity, setQuantity] = useState('');
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
@@ -27,12 +27,10 @@ function StockForm({ stock, action }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
-
     if (!quantity) {
       showToast('Please enter a value.', 'error');
       return;
@@ -52,8 +50,21 @@ function StockForm({ stock, action }) {
           quantity,
         });
       }
-      const verb = action == 'buy'?'purchased':'sold';
-      const msg = `Success: You have ${verb} ${res.data.quantity} shares of ${res.data.symbol}!`;
+      const holding = res.data.holding;
+
+      if(holding.quantity === 0) {
+        setHoldings(null)
+      } else {
+        setHoldings({
+          'quantity':holding.quantity,
+          'book_cost':holding.book_cost,
+          'avg_price':holding.book_cost/holding.quantity,
+          'total_value':holding.quantity*holding.stock.last_sale,
+        })
+      }
+
+      const msg = holding.quantity != 0 ? `Success: You now own ${holding.quantity} shares of ${holding.stock.symbol}!`
+        : `Success: You have sold all your shares of ${holding.stock.symbol}`;
       showToast(msg, 'success');
     } catch (err) {
       let msg = '';

@@ -1,10 +1,12 @@
-const Holding = ({ quantity, symbol, company, prev_close, last_sale }) => {
+const Holding = ({ quantity, symbol, company, prev_close, last_sale, book_cost, allTime }) => {
   if (!prev_close) {
     prev_close = last_sale;
   }
 
-  const net = Math.round((last_sale - prev_close) * 100) / 100;
-  const percentChange = Math.round((10000 * net) / prev_close) / 100;
+  const net = allTime ? Math.round(((quantity*last_sale) - book_cost) * 100)/100
+    : Math.round((last_sale - prev_close) * 100) / 100;
+  const percentChange = allTime ? Math.round((10000 * net) / book_cost)/100
+    : Math.round((10000 * net)/prev_close)/100;
   const isPositive = percentChange >= 0;
 
   return (

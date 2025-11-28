@@ -82,9 +82,65 @@ def logout():
   unset_jwt_cookies(resp)
   return resp, 200
 
-@auth_bp.post('/check')
+@auth_bp.get('/check')
 def check():
-  user = get_jwt_identity()
-  if user:
+  try:
+    user = get_jwt_identity()
     return {"authenticated": True}, 200
-  return {"authenticated": False}, 200
+  except Exception as e:
+    return {"authenticated": False}, 200
+
+@auth_bp.delete('/account/delete')
+@jwt_required()
+def delete_account():
+  user_id = get_jwt_identity()
+  user = User.query.get(user_id)
+
+  if not user:
+    return jsonify({'error': 'user not found'}), 404
+
+  db.session.delete(user)
+  db.session.commit()
+
+  resp = jsonify({"message": "account deleted"})
+  unset_jwt_cookies(resp)
+  return resp, 200
+
+@auth_bp.put('/account/update')
+@jwt_required()
+def update_account():
+  user_id = get_jwt_identity()
+  user = User.query.get(user_id)
+
+  if not user:
+    return jsonify({'error': 'user not found'}), 404
+
+  data = request.get_json() or {}
+
+  new_username = data.get("username")
+  new_email = data.get("email")
+  new_password = data.get("password")
+
+  if new_username and new_username != user.username:
+    exists = User.query.filter(User.username == new_username).first()
+    if exists:
+      return jsonify({'error': 'username already taken'}), 409
+    user.username = new_username
+
+  if new_email and new_email != user.email:
+    exists = User.query.filter(User.email == new_email).first()
+    if exists:
+      return jsonify({'error': 'email already taken'}), 409
+    user.email = new_email
+
+  if new_password:
+    user.set_password(new_password)
+
+  db.session.commit()
+
+  return jsonify({
+    "message": "account updated",
+    "username": user.username,
+    "email": user.email
+  }), 200
+

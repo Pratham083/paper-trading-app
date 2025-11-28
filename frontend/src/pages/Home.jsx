@@ -7,6 +7,8 @@ import api from "../api";
 const Home = () => {
   const { isAuthenticated } = useAuth();
 
+  const [allTime, setAllTime] = useState(false);
+
   const [user, setUser] = useState({
     holdings: [],
     username: "",
@@ -81,6 +83,25 @@ const Home = () => {
             </h4>
           </div>
 
+          {user.holdings.length > 0 && <div className="flex justify-end mb-4">
+            <select
+              value={allTime ? "all" : "daily"}
+              onChange={(e) => setAllTime(e.target.value === "all")}
+              className="
+                bg-secondary 
+                text-text 
+                px-3 py-2 
+                rounded-lg 
+                shadow 
+                border-none 
+                focus:outline-none
+              "
+            >
+              <option value="daily">Daily Return</option>
+              <option value="all">All-Time Return</option>
+            </select>
+          </div>}
+
           <div className="space-y-4">
             {user.holdings.length === 0 && (
               <div className="text-center text-gray-500 italic">
@@ -95,10 +116,11 @@ const Home = () => {
                 symbol: holding.stock.symbol,
                 company: holding.stock.company,
                 quantity: holding.quantity,
+                book_cost: holding.book_cost
               };
 
               return (
-                <Holding key={holding.id} {...holdingClean} />
+                <Holding key={holding.id} allTime={allTime} {...holdingClean} />
               );
             })}
           </div>

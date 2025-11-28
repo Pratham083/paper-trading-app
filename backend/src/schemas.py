@@ -27,6 +27,7 @@ stock_schema = StockSchema()
 class HoldingSchema(Schema):
   id = fields.Int(dump_only=True)
   quantity = fields.Float(required=True)
+  book_cost = fields.Float(dump_only=True)
   stock_id = fields.Int(required=True)
   portfolio_id = fields.Int(dump_only=True)
   stock = fields.Nested(StockSchema, dump_only=True)
@@ -53,3 +54,10 @@ class LoginSchema(Schema):
   identifier = fields.Str(required=True)
   password = fields.Str(load_only=True, required=True)
 login_schema = LoginSchema()
+
+class ProtectedUserSchema(Schema):
+  id = fields.Int(dump_only=True)
+  username = fields.Str(dump_only=True)
+  created_at = fields.DateTime(dump_only=True)
+  portfolio = fields.Nested(PortfolioSchema, dump_only=True)
+protected_user_schema = ProtectedUserSchema()
