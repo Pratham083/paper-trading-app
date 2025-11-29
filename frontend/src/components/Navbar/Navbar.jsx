@@ -20,6 +20,7 @@ const Navbar = () => {
         <div className="flex items-center gap-6 text-text">
           <Link to="/" className="hover:text-primary transition">Portfolio</Link>
           <Link to="/leaderboard" className="hover:text-primary transition">Leaderboard</Link>
+          <Link to="/account" className="hover:text-primary transition">Account</Link>
         </div>
 
         {isAuthenticated ? (

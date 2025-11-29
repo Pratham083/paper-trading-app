@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validate, post_load
+from marshmallow import Schema, fields, validate, post_load, validates, ValidationError, validates_schema
 from src.models import User, Portfolio, Holding, Stock
 
 class StockSchema(Schema):
@@ -43,17 +43,27 @@ portfolio_schema = PortfolioSchema()
 
 class UserSchema(Schema):
   id = fields.Int(dump_only=True)
-  username = fields.Str(required=True, validate=validate.Length(max=50))
+  username = fields.Str(required=True, validate=validate.Length(min=3, max=50))
   email = fields.Email(required=True)
-  password = fields.Str(load_only=True, required=True)
+  password = fields.Str(load_only=True, required=True, validate=validate.Length(min=8))
   created_at = fields.DateTime(dump_only=True)
   portfolio = fields.Nested(PortfolioSchema, dump_only=True)
+    
 user_schema = UserSchema()
 
 class LoginSchema(Schema):
   identifier = fields.Str(required=True)
   password = fields.Str(load_only=True, required=True)
 login_schema = LoginSchema()
+
+
+class AccountUpdateSchema(Schema):
+  username = fields.Str(required=False, validate=validate.Length(min=3, max=50))
+  email = fields.Email(required=False)
+  new_password = fields.Str(required=False, validate=validate.Length(min=8))
+  current_password = fields.Str(required=False)
+
+account_update_schema = AccountUpdateSchema()
 
 class ProtectedUserSchema(Schema):
   id = fields.Int(dump_only=True)

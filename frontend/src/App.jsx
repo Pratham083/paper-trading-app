@@ -8,6 +8,8 @@ import Leaderboard from './pages/Leaderboard';
 import StockDetails from './pages/StockDetails';
 import Register from './pages/Register';
 import NotFound from './pages/NotFound';
+import Account from './pages/Account';
+import PortfolioView from './pages/PortfolioView';
 
 function App() {
   const navigate = useNavigate();
@@ -23,7 +25,9 @@ function App() {
         <Route path="/" element={<Home />}/>
         <Route path="/login" element={<Login />}/>
         <Route path="/register" element={<Register/>}/>
+        <Route path="/account" element={<Account />} />
         <Route path="/leaderboard" element={<Leaderboard />}/>
+        <Route path="/portfolio/:username" element={<PortfolioView />}/>
         <Route path="/chart/:symbol" element={<StockDetails />} />
         <Route path="*" element={<NotFound/>}></Route>
       </Routes>

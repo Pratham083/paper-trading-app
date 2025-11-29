@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Holding from "../components/Holding/Holding";
 import api from "../api";
+import { formatNumber } from "../utils";
 
 const Home = () => {
   const { isAuthenticated } = useAuth();
@@ -39,7 +40,7 @@ const Home = () => {
     };
 
     getProfile();
-  }, []);
+  }, [isAuthenticated]);
   const getNet = (portfolio) => {
     const holdings = portfolio.holdings;
     const balance = portfolio.balance;
@@ -48,12 +49,9 @@ const Home = () => {
     holdings.forEach((holding) => {
       assetValue += (holding.quantity * holding.stock.last_sale);
     })
-    return total_deposited - (balance + assetValue);
+    return balance + assetValue - total_deposited;
   }
-  const percent =
-    user.total_deposited !== 0
-      ? Math.round((user.net * 100) / user.total_deposited)
-      : 0;
+  const percent =user.total_deposited !== 0 ? (user.net * 100)/user.total_deposited: 0;
 
   return (
     <div className="min-h-screen bg-background px-6 py-8">
@@ -78,7 +76,7 @@ const Home = () => {
                 }`}
               >
                 {user.net >= -0.01 ? "+" : "-"}$
-                {Math.abs(user.net).toFixed(2)} ({percent}%)
+                {Math.abs(user.net).toFixed(2)} ({formatNumber(percent)}%)
               </span>
             </h4>
           </div>

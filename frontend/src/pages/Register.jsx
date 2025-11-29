@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import api from "../api";
 import { useAuth } from "../components/AuthContext/AuthContext";
+import { formatMarshmallowError } from "../utils";
 
 function Register() {
   const { isAuthenticated, setAuthenticated } = useAuth();
@@ -30,7 +31,8 @@ function Register() {
       }
     } catch (err) {
       if (err.response?.data?.error) {
-        setError(err.response.data.error);
+        const errors = err.response?.data?.error;
+        setError(formatMarshmallowError(errors));
       } else {
         setError("Server error.");
       }
@@ -45,7 +47,7 @@ function Register() {
       >
         <h2 className="text-2xl font-bold text-text mb-4">Register</h2>
 
-        {error && <p className="mb-3 text-accent font-medium">{error}</p>}
+        {error && <p className="mb-3 text-accent whitespace-pre-line font-medium">{error}</p>}
 
         <input
           type="text"

@@ -1,4 +1,8 @@
+import { formatNumber } from "../../utils";
+import { Navigate, useNavigate } from "react-router-dom";
+
 const Holding = ({ quantity, symbol, company, prev_close, last_sale, book_cost, allTime }) => {
+  const navigate = useNavigate();
   if (!prev_close) {
     prev_close = last_sale;
   }
@@ -10,7 +14,10 @@ const Holding = ({ quantity, symbol, company, prev_close, last_sale, book_cost, 
   const isPositive = percentChange >= 0;
 
   return (
-    <div className="bg-white shadow-sm rounded-xl p-4 mb-3 hover:shadow-md transition">
+    <div
+      className="bg-white shadow-sm rounded-xl p-4 mb-3 hover:shadow-md transition"
+      onClick={() => navigate(`/chart/${symbol}`)}
+    >
       <div className="flex justify-between items-center">
         <div>
           <div className="flex items-center gap-3">
@@ -28,7 +35,7 @@ const Holding = ({ quantity, symbol, company, prev_close, last_sale, book_cost, 
               isPositive ? "text-green-600" : "text-red-600"
             }`}
           >
-            {isPositive ? "+" : "-"}${Math.abs(net)} ({percentChange}%)
+            {isPositive ? "+" : "-"}${formatNumber(Math.abs(net))} ({percentChange}%)
           </h5>
         </div>
       </div>

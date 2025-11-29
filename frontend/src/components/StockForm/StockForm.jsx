@@ -92,7 +92,7 @@ function StockForm({ stock, action, setHoldings }) {
             type="text"
             value={quantity}
             onChange={handleChange}
-            placeholder="Enter a value"
+            placeholder="Number of shares"
             className="
               w-full 
               px-3 py-2 

@@ -1,4 +1,5 @@
 from flask import jsonify
+from src.extensions import jwt
 
 def register_error_handlers(app):
   @app.errorhandler(404)
@@ -12,3 +13,11 @@ def register_error_handlers(app):
   @app.errorhandler(500)
   def server_error(e):
     return jsonify({"error": "server_error", "message": "An unexpected error occurred"}), 500
+
+  @app.errorhandler(401)
+  def handle_401(e):
+    return {"error": "Unauthorized"}, 401
+  
+  @jwt.expired_token_loader
+  def expired_token_callback(jwt_header, jwt_payload):
+    return jsonify({"error": "token_expired","message": "Token has expired"}), 401

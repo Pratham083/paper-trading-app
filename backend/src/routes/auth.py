@@ -1,11 +1,11 @@
 from flask_jwt_extended import (
   create_access_token, create_refresh_token, set_access_cookies,  set_refresh_cookies,
-  jwt_required, get_jwt_identity, unset_jwt_cookies
+  jwt_required, get_jwt_identity, unset_jwt_cookies, verify_jwt_in_request
 )
 from flask import Blueprint, request, jsonify, current_app
 from src.models import User, Portfolio
 from src.extensions import db
-from src.schemas import login_schema, user_schema
+from src.schemas import login_schema, user_schema, account_update_schema
 from marshmallow import ValidationError
 from sqlalchemy import or_
 
@@ -17,15 +17,15 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 def register():
   try:
     data = user_schema.load(request.get_json())
-  except ValidationError:
-    return jsonify({'error':'username, email, and password required'}), 400
+  except ValidationError as e:
+    return jsonify({'error':e.messages}), 400
   username = data.get('username')
   email = data.get('email')
   password = data.get('password')
   user = User.query.filter(or_(User.username == username, User.email == email)).first()
   if user:
     if user.username == username:
-      return jsonify({'error': 'username already exists'}), 409
+      return jsonify({'error': 'sername already exists'}), 409
     if user.email == email:
       return jsonify({'error': 'email already exists'}), 409
   user = User(username=username, email=email)
@@ -47,8 +47,8 @@ def register():
 def login():
   try:
     data = login_schema.load(request.get_json())
-  except ValidationError:
-    return jsonify({'error':'username/email and password required'}), 400
+  except ValidationError as e:
+    return jsonify({'error':e.messages}), 400
   
   identifier = data.get('identifier')
   password = data.get('password')
@@ -85,8 +85,12 @@ def logout():
 @auth_bp.get('/check')
 def check():
   try:
+    verify_jwt_in_request(optional=True)
     user = get_jwt_identity()
-    return {"authenticated": True}, 200
+    if user:
+      return {"authenticated": True}, 200
+    else:
+      return {"authenticated": False}, 200
   except Exception as e:
     return {"authenticated": False}, 200
 
@@ -112,6 +116,11 @@ def update_account():
   user_id = get_jwt_identity()
   user = User.query.get(user_id)
 
+  try:
+    data = account_update_schema.load(request.get_json())
+  except ValidationError as err:
+    return jsonify({"error": err.messages}), 400
+
   if not user:
     return jsonify({'error': 'user not found'}), 404
 
@@ -119,7 +128,8 @@ def update_account():
 
   new_username = data.get("username")
   new_email = data.get("email")
-  new_password = data.get("password")
+  new_password = data.get("new_password")
+  current_password = data.get("current_password")
 
   if new_username and new_username != user.username:
     exists = User.query.filter(User.username == new_username).first()
@@ -133,7 +143,9 @@ def update_account():
       return jsonify({'error': 'email already taken'}), 409
     user.email = new_email
 
-  if new_password:
+  if new_password and current_password:
+    if not user.check_password(current_password):
+      return jsonify({'error': 'password incorrect'}), 401
     user.set_password(new_password)
 
   db.session.commit()

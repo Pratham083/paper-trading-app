@@ -27,14 +27,56 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) prom.reject(error);
+    else prom.resolve(token);
+  });
+  failedQueue = [];
+};
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      if (navigateToLogin) navigateToLogin();
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (originalRequest.url.includes("/auth/login")) {
+      return Promise.reject(error);
     }
+    const resp = error.response;
+    if (resp?.status === 401 && resp.data?.message === "Token has expired" && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(() => api(originalRequest))
+          .catch(err => Promise.reject(err));
+      }
+
+      isRefreshing = true;
+
+      try {
+        const csrfToken = getCookie('csrf_access_token');
+        await api.post("/auth/refresh", {}, {
+          headers: { 'X-CSRF-TOKEN': csrfToken }
+        });
+        isRefreshing = false;
+        processQueue(null);
+        return api(originalRequest);
+      } catch (err) {
+        isRefreshing = false;
+        processQueue(err, null);
+        if (navigateToLogin) navigateToLogin();
+        return Promise.reject(err);
+      }
+    }
+
     return Promise.reject(error);
   }
 );
+
 
 export default api;

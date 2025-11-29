@@ -77,8 +77,8 @@ class Stock(db.Model):
     nullable=False
   )
 
-  def refresh_data(self):
-    if datetime.now(timezone.utc) - self.last_updated > timedelta(hours=1) or self.last_sale is None:
+  def refresh_data(self, commit=True):
+    if datetime.now(timezone.utc) - self.last_updated > timedelta(minutes=15) or self.last_sale is None:
       stock_data = fetch_stock_details(self.symbol)
 
       for key, value in stock_data.items():
@@ -86,5 +86,6 @@ class Stock(db.Model):
           setattr(self, key, value)
 
       self.last_updated = datetime.now(timezone.utc)
-      db.session.commit()
+      if commit:
+        db.session.commit()
   

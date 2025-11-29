@@ -5,7 +5,7 @@ import { useAuth } from "../components/AuthContext/AuthContext";
 
 function Login() {
   const { isAuthenticated, login } = useAuth();
-  if (isAuthenticated) return <Navigate to="/" />;
+  //if (isAuthenticated) return <Navigate to="/" />;
 
   const navigate = useNavigate();
   const [identifier, setIdentifier] = useState("");
@@ -29,7 +29,6 @@ function Login() {
         navigate("/");
       }
     } catch (err) {
-      console.log(err);
       if (err.response?.status === 401) {
         setError("Invalid credentials.");
       } else {

@@ -111,7 +111,7 @@ const SearchBar = () => {
               <Link
                 to={`/chart/${item.symbol}`}
                 onClick={() => setSearchTerm('')}
-                className="block px-4 py-2 hover:bg-background"
+                className="block px-4 py-2 hover:ring-2 hover:ring-primary hover:rounded-md"
               >
                 <span className="font-bold">{item.symbol}</span> – {item.company}
               </Link>

@@ -1,4 +1,4 @@
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
 from flask import Blueprint, request, jsonify
 from src.models import User, Portfolio, Holding, Stock
 from src.extensions import db
@@ -20,6 +20,13 @@ def handle_options():
 def get_portfolio():
   user_id = get_jwt_identity()
   user = User.query.get(user_id)
+
+  if user.portfolio and user.portfolio.holdings:
+    for holding in user.portfolio.holdings:
+      if holding.stock:
+        holding.stock.refresh_data(commit=False)
+    db.session.commit()
+
   user_json = user_schema.dump(user)
   return jsonify(user_json), 200
 
@@ -75,6 +82,10 @@ def buy_stock():
 def get_holding(stock_id):
   user_id = get_jwt_identity()
   portfolio = Portfolio.query.filter_by(user_id=user_id).first()
+
+  stock = Stock.query.get(stock_id)
+  stock.refresh_data()
+
   holding = Holding.query.filter_by(portfolio_id=portfolio.id,stock_id=stock_id).first()
   if not holding:
     return jsonify({'error': 'holding not found'}), 404
@@ -179,6 +190,16 @@ def leaderboard():
   today = date.today()
 
   if daily_cache['date'] != today or daily_cache['leaderboard'] is None:
+
+    stock_ids = db.session.query(Holding.stock_id).join(Portfolio).distinct().all()
+    stock_ids = [s[0] for s in stock_ids]
+
+    stocks = Stock.query.filter(Stock.id.in_(stock_ids)).all()
+
+    for stock in stocks:
+      stock.refresh_data(commit=False)
+    db.session.commit()
+
     user_totals = (
       db.session.query(
         Portfolio.user_id.label('user_id'),
@@ -224,7 +245,8 @@ def leaderboard():
 
   user_rank = None
   try:
-    current_user_id = get_jwt_identity()
+    verify_jwt_in_request(optional=True)
+    current_user_id = int(get_jwt_identity())
   except Exception as e:
     current_user_id = None
   if current_user_id:

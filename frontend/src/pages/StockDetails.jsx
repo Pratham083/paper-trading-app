@@ -4,6 +4,7 @@ import StockForm from '../components/StockForm/StockForm';
 import { useParams } from 'react-router-dom';
 import { useAuth } from "../components/AuthContext/AuthContext";
 import api from '../api';
+import { formatNumber } from '../utils';
 
 export default function StockDetails() {
   const {isAuthenticated} = useAuth();
@@ -133,14 +134,11 @@ export default function StockDetails() {
                 <p><strong>Open:</strong> ${details.open}</p>
                 <p><strong>Prev Close:</strong> ${details.prev_close}</p>
                 <p><strong>P/E Ratio:</strong> {details.pe_ratio}</p>
-                <p><strong>Dividend Yield:</strong> {details.dividend_yield}</p>
+                <p><strong>Yield:</strong> {details.dividend_yield}%</p>
                 <p><strong>Volume:</strong> {details.volume?.toLocaleString()}</p>
-                <p><strong>Market Cap:</strong> {details.market_cap?.toLocaleString()}</p>
-                <p><strong>Revenue:</strong> {details.revenue?.toLocaleString()}</p>
-                <p><strong>Debt:</strong> {details.debt?.toLocaleString()}</p>
-                <p><strong>Sector:</strong> {details.sector ?? "N/A"}</p>
-                <p><strong>Industry:</strong> {details.industry ?? "N/A"}</p>
-                <p><strong>IPO Year:</strong> {details.ipo_year ?? "N/A"}</p>
+                <p><strong>Market Cap:</strong> ${details.market_cap?.toLocaleString()}</p>
+                <p><strong>Revenue:</strong> ${details.revenue?.toLocaleString()}</p>
+                <p><strong>Debt:</strong> ${details.debt?.toLocaleString()}</p>
               </div>
             )}
           </div>
@@ -149,11 +147,12 @@ export default function StockDetails() {
           <div className="bg-secondary rounded-xl p-6 shadow-md border border-secondary/20">
             <h2 className="text-xl font-semibold mb-4">Metrics</h2>
               <div className="space-y-2 text-sm">
-                <p><strong>{holdings.quantity} shares</strong> ${holdings.total_value}</p>
+                <p><strong>{holdings.quantity} shares</strong> ${formatNumber(holdings.total_value)}</p>
                 <p><strong>Book cost:</strong> ${holdings.book_cost}</p>
                 <p><strong>Average Price:</strong> ${holdings.avg_price}</p>
                 <p><strong>Total return: </strong> 
-                  ${holdings.total_value-holdings.book_cost} ({100*(holdings.total_value-holdings.book_cost)/holdings.book_cost})%
+                  ${formatNumber(holdings.total_value-holdings.book_cost)}
+                   ({formatNumber(100*(holdings.total_value-holdings.book_cost)/holdings.book_cost)})%
                 </p>
               </div>
           </div>
