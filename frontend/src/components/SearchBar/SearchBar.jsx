@@ -64,8 +64,10 @@ const SearchBar = () => {
 
     if (filtered.length < resultSize) {
       const secondary = symbols.filter(item =>
-        item.company.toUpperCase().includes(term)
+        item.company.toUpperCase().includes(term) &&
+        !item.symbol.toUpperCase().startsWith(term)
       );
+
       filtered = filtered.concat(secondary);
     }
 

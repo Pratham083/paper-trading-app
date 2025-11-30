@@ -5,7 +5,7 @@ import { useAuth } from "../components/AuthContext/AuthContext";
 import { formatMarshmallowError } from "../utils";
 
 const Account = () => {
-  const { isAuthenticated, setAuthenticated } = useAuth();
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const [userData, setUserData] = useState({
@@ -77,8 +77,8 @@ const Account = () => {
     try {
       const res = await api.delete("/auth/account/delete");
       if (res.status === 200) {
-        setAuthenticated(false);
-        navigate("/register");
+        setIsAuthenticated(false);
+        navigate("/");
       }
     } catch (err) {
       setError("Failed to delete account.");
@@ -89,7 +89,7 @@ const Account = () => {
     <div className="min-h-screen flex justify-center items-start bg-background px-4 pt-24">
       <form 
         onSubmit={handleUpdate}
-        className="w-full max-w-sm bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-md border border-secondary/20"
+        className="w-full max-w-sm bg-secondary backdrop-blur-sm p-6 rounded-xl shadow-md border border-secondary/20"
       >
         <h2 className="text-2xl font-bold text-text mb-4">Account Settings</h2>
 
@@ -138,7 +138,7 @@ const Account = () => {
         <button
           type="button"
           onClick={handleDelete}
-          className="w-full px-4 py-2 bg-red-600 text-text rounded-lg font-semibold hover:bg-red-700 transition"
+          className="w-full px-4 py-2 bg-red-700 text-text rounded-lg font-semibold hover:bg-red-800 transition"
         >
           Delete Account
         </button>

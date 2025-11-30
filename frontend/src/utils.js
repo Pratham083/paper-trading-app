@@ -1,8 +1,17 @@
-export function formatNumber(value) {
-  if (value == null || isNaN(value)) {
-    return "0.00";
+export function formatNumber(num, largeNum=false) {
+  if (num == null || isNaN(num)) {
+    return "-";
   }
-  return Number(value).toFixed(2);
+  if(!largeNum) {
+    return Number(num).toFixed(2);
+  } else {
+    const absNum = Math.abs(num);
+    if (absNum >= 1e12) return (num/1e12).toFixed(2) +"T";
+    if (absNum >= 1e9)  return (num/1e9).toFixed(2) +"B";
+    if (absNum >= 1e6)  return (num/1e6).toFixed(2) +"M";
+    if (absNum >= 1e3)  return (num /1e3).toFixed(2) +"K";
+    return Number(num).toFixed(2);
+  }
 }
 
 //marshmallow errors come in objects so need to format

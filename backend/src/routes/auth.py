@@ -83,16 +83,17 @@ def logout():
   return resp, 200
 
 @auth_bp.get('/check')
+@jwt_required()
 def check():
   try:
-    verify_jwt_in_request(optional=True)
-    user = get_jwt_identity()
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
     if user:
       return {"authenticated": True}, 200
     else:
-      return {"authenticated": False}, 200
+      return {"authenticated": False}, 401
   except Exception as e:
-    return {"authenticated": False}, 200
+    return {"authenticated": False}, 401
 
 @auth_bp.delete('/account/delete')
 @jwt_required()

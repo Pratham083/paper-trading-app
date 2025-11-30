@@ -15,7 +15,7 @@ const Holding = ({ quantity, symbol, company, prev_close, last_sale, book_cost, 
 
   return (
     <div
-      className="bg-white shadow-sm rounded-xl p-4 mb-3 hover:shadow-md transition"
+      className="bg-secondary shadow hover:shadow-lg cursor-pointer rounded-xl p-4 mb-3 transition"
       onClick={() => navigate(`/chart/${symbol}`)}
     >
       <div className="flex justify-between items-center">

@@ -41,7 +41,7 @@ function Login() {
     <div className="min-h-screen flex justify-center items-start bg-background px-4 pt-24">
       <form 
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-md border border-secondary/20"
+        className="w-full max-w-sm bg-secondary backdrop-blur-sm p-6 rounded-xl shadow-md border border-secondary/20"
       >
         <h2 className="text-2xl font-bold text-text mb-4">Login</h2>
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api';
 import { useAuth } from '../AuthContext/AuthContext';
 
-function StockForm({ stock, action, setHoldings }) {
+function StockForm({stock, action, setHoldings }) {
   const { isAuthenticated } = useAuth();
   const [quantity, setQuantity] = useState('');
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
@@ -69,8 +69,8 @@ function StockForm({ stock, action, setHoldings }) {
     } catch (err) {
       let msg = '';
 
-      if (err?.response?.data?.non_field_errors) {
-        msg = `Error: ${err.response.data.non_field_errors[0]}`;
+      if (err?.response?.data?.error) {
+        msg = `Error: ${err.response.data.error}`;
       } else {
         msg = 'Error: Unknown, try again later.';
       }
@@ -92,7 +92,7 @@ function StockForm({ stock, action, setHoldings }) {
             type="text"
             value={quantity}
             onChange={handleChange}
-            placeholder="Number of shares"
+            placeholder="# of shares"
             className="
               w-full 
               px-3 py-2 

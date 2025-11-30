@@ -18,6 +18,11 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const method = config.method?.toLowerCase();
+
+  if (config.url.includes("/auth/refresh")) {
+    return config;
+  }
+
   if (method === 'post' || method === 'put' || method === 'delete') {
     const csrfToken = getCookie('csrf_access_token');
     if (csrfToken) {
@@ -59,7 +64,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const csrfToken = getCookie('csrf_access_token');
+        const csrfToken = getCookie('csrf_refresh_token');
         await api.post("/auth/refresh", {}, {
           headers: { 'X-CSRF-TOKEN': csrfToken }
         });

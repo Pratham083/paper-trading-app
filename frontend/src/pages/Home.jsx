@@ -2,6 +2,7 @@ import { useAuth } from "../components/AuthContext/AuthContext";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Holding from "../components/Holding/Holding";
+import Register from "./Register";
 import api from "../api";
 import { formatNumber } from "../utils";
 
@@ -59,16 +60,16 @@ const Home = () => {
         <div className="max-w-3xl mx-auto">
 
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-primary">
+            <h2 className="text-4xl font-bold text-primary">
               Welcome, {user.username}!
             </h2>
 
-            <h3 className="text-xl mt-4 text-text">
+            <h3 className="text-2xl mt-4 text-text">
               Balance:{" "}
               <span className="font-semibold">${user.balance.toFixed(2)}</span>
             </h3>
 
-            <h4 className="text-lg mt-2">
+            <h4 className="text-xl mt-2">
               <span className="text-text font-medium">Net: </span>
               <span
                 className={`font-semibold ${
@@ -92,17 +93,18 @@ const Home = () => {
                 rounded-lg 
                 shadow 
                 border-none 
-                focus:outline-none
+                focus:outline-primary
+                hover:shadow-lg cursor-pointer
               "
             >
-              <option value="daily">Daily Return</option>
-              <option value="all">All-Time Return</option>
+              <option value="daily">Daily return</option>
+              <option value="all">All time return</option>
             </select>
           </div>}
 
           <div className="space-y-4">
             {user.holdings.length === 0 && (
-              <div className="text-center text-gray-500 italic">
+              <div className="text-center text-gray-500 text-xl italic">
                 You do not own any stocks yet.
               </div>
             )}
@@ -125,16 +127,10 @@ const Home = () => {
         </div>
       ) : (
         <div className="max-w-xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-text mb-6">
+          <h2 className="text-4xl font-bold text-text mb-6">
             Sign up to start paper trading!
           </h2>
-
-          <Link
-            to="/register"
-            className="bg-primary text-text px-6 py-3 rounded-lg text-lg shadow hover:opacity-90 transition"
-          >
-            Sign Up
-          </Link>
+          <Register />
         </div>
       )}
     </div>

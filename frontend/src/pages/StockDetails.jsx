@@ -88,16 +88,16 @@ export default function StockDetails() {
       <div className="max-w-6xl mx-auto">
     
         <div className="mb-8">
-          <h1 className="text-4xl font-bold tracking-tight text-primary">
+          <h1 className="text-5xl font-semibold tracking-tight">
             {symbol.toUpperCase()}
           </h1>
 
-          {details && <h2 className="text-lg text-text/70 mt-1">
+          {details && <h2 className="text-xl text-text/80 mt-1">
             {details.company}
           </h2>}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
 
           <div className="lg:col-span-2">
             {loading && <p className="text-lg">Loading chart data...</p>}
@@ -108,7 +108,7 @@ export default function StockDetails() {
               <select
                 value={timeframe}
                 onChange={(e) => setTimeframe(e.target.value)}
-                className="w-40 text-text bg-secondary rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-40 text-text bg-secondary rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="1d">1 Day</option>
                 <option value="1wk">1 Week</option>
@@ -120,53 +120,75 @@ export default function StockDetails() {
             </div>
           </div>
 
-          <div className="bg-secondary rounded-xl p-6 shadow-md border border-secondary/20">
+          <div className="bg-secondary rounded-xl p-6 shadow-md border border-secondary/20 max-w-[250px]">
             <h2 className="text-xl font-semibold mb-4">Metrics</h2>
+            <hr className="border-t border-gray-300 my-4" />
 
             {!details && <p>No details available.</p>}
 
             {details && (
-              <div className="space-y-2 text-sm">
-                <p><strong>Exchange:</strong> {details.exchange ?? "N/A"}</p>
-                <p><strong>Last Sale:</strong> ${details.last_sale}</p>
-                <p><strong>High:</strong> ${details.high}</p>
-                <p><strong>Low:</strong> ${details.low}</p>
-                <p><strong>Open:</strong> ${details.open}</p>
-                <p><strong>Prev Close:</strong> ${details.prev_close}</p>
-                <p><strong>P/E Ratio:</strong> {details.pe_ratio}</p>
-                <p><strong>Yield:</strong> {details.dividend_yield}%</p>
-                <p><strong>Volume:</strong> {details.volume?.toLocaleString()}</p>
-                <p><strong>Market Cap:</strong> ${details.market_cap?.toLocaleString()}</p>
-                <p><strong>Revenue:</strong> ${details.revenue?.toLocaleString()}</p>
-                <p><strong>Debt:</strong> ${details.debt?.toLocaleString()}</p>
+              <div className="space-y-2">
+                {[
+                  {label:"Last Sale", value:`$${details.last_sale}` },
+                  {label:"High", value:`$${details.high}` },
+                  {label:"Low", value:`$${details.low}` },
+                  {label:"Open", value: `$${details.open}` },
+                  {label:"Prev Close", value: `$${details.prev_close}` },
+                  {label:"P/E Ratio", value: formatNumber(details.pe_ratio)},
+                  {label:"Yield", value: details.dividend_yield ? `${details.dividend_yield}%` : '-' },
+                  {label:"Volume", value:formatNumber(details.volume, true) },
+                  {label:"Market Cap", value:formatNumber(details.market_cap, true) },
+                  {label:"Revenue", value:formatNumber(details.revenue, true) },
+                  {label:"Debt", value: formatNumber(details.debt, true) },
+                  {label:"Exchange", value: details.exchange ?? "-" },
+                ].map((field) => (
+                  <div key={field.label} className="flex justify-between">
+                    <strong>{field.label}:</strong>
+                    <span>{field.value}</span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
         </div>
         {holdings &&
-          <div className="bg-secondary rounded-xl p-6 shadow-md border border-secondary/20">
-            <h2 className="text-xl font-semibold mb-4">Metrics</h2>
-              <div className="space-y-2 text-sm">
-                <p><strong>{holdings.quantity} shares</strong> ${formatNumber(holdings.total_value)}</p>
-                <p><strong>Book cost:</strong> ${holdings.book_cost}</p>
-                <p><strong>Average Price:</strong> ${holdings.avg_price}</p>
-                <p><strong>Total return: </strong> 
-                  ${formatNumber(holdings.total_value-holdings.book_cost)}
-                   ({formatNumber(100*(holdings.total_value-holdings.book_cost)/holdings.book_cost)})%
-                </p>
+          <div className="mt-6 bg-secondary rounded-xl p-6 shadow-md border border-secondary/20 w-[300px]">
+            <h2 className="text-xl font-semibold mb-4">Holdings</h2>
+              <hr className="border-t border-gray-300 my-4" />
+              <div className="space-y-2 max-w-xs">
+                {
+                  [
+                    {label: `${holdings.quantity} shares`, value:`$${formatNumber(holdings.total_value)}`},
+                    {label: 'Book cost', value:`$${formatNumber(holdings.book_cost)}`},
+                    {label: 'Average price', value:`$${formatNumber(holdings.avg_price)}`},
+                  ].map((field) => (
+                    <div key={field.label} className="flex justify-between">
+                      <strong>{field.label}:</strong>
+                      <span>{field.value}</span>
+                    </div>
+                  ))
+                }
+                <div key="Total return: " className="flex justify-between">
+                  <strong>Total return: </strong>
+                  <span className={`${holdings.total_value-holdings.book_cost > -0.01 ? "text-green-600" : "text-red-600"}`}>
+                    ${formatNumber(holdings.total_value-holdings.book_cost)} ({formatNumber(100*(holdings.total_value-holdings.book_cost)/holdings.book_cost)})%
+                  </span>
+                </div>
               </div>
           </div>
         }
 
         {details &&
-        <div className="mt-8 space-y-6">
-          <div className="bg-secondary rounded-xl p-6 shadow-md">
-            Buy Shares
+        <div className="mt-6 space-x-6 flex">
+          <div className="bg-secondary rounded-xl p-6 shadow-md w-[300px]">
+            <h2 className="text-xl font-semibold mb-4">Buy Shares</h2>
+            <hr className="border-t border-gray-300 my-4" />
             <StockForm stock={details.id} action="buy" setHoldings={setHoldings} />
           </div>
 
-          <div className="bg-secondary rounded-xl p-6 shadow-md">
-            Sell Shares
+          <div className="bg-secondary rounded-xl p-6 shadow-md w-[300px]">
+              <h2 className="text-xl font-semibold mb-4">Sell Shares</h2>
+              <hr className="border-t border-gray-300 my-4" />
             <StockForm stock={details.id} action="sell" setHoldings={setHoldings} />
           </div>
         </div>
