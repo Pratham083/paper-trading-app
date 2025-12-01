@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: paper_db
+    environment:
+      POSTGRES_DB: paper_trading_db
+      POSTGRES_USER: pratham
+      POSTGRES_PASSWORD: password
+      FRONTEND_URL: http://localhost:4173
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: paper_backend
+    environment:
+      DATABASE_URL: postgresql+psycopg2://pratham:password@postgres:5432/paper_trading_db
+      FLASK_CONFIG: prod
+    depends_on:
+      - postgres
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    container_name: paper_frontend
+    ports:
+      - "4173:4173"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
