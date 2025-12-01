@@ -8,7 +8,6 @@ services:
       POSTGRES_DB: paper_trading_db
       POSTGRES_USER: pratham
       POSTGRES_PASSWORD: password
-      FRONTEND_URL: http://localhost:4173
     ports:
       - "5432:5432"
     volumes:
@@ -30,6 +29,8 @@ services:
   frontend:
     build:
       context: .
+      args:
+        VITE_API_URL: http://backend:5000
       dockerfile: frontend.Dockerfile
     container_name: paper_frontend
     ports:
