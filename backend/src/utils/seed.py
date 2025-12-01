@@ -17,7 +17,7 @@ def seed_json(filepath, exchange):
     with open(filepath) as f:
       data = json.load(f)
   except Exception as e:
-    print(f"Failed to read {filepath}: {e}")
+    #print(f"Failed to read {filepath}: {e}")
     return
   
   for item in data:
@@ -33,14 +33,14 @@ def seed_json(filepath, exchange):
           db.session.add(stock)
     except Exception as e:
       db.session.rollback()
-      print(f'failed to insert item {item}: {e}')
+      #print(f'failed to insert item {item}: {e}')
       break
   try:
     db.session.commit()
-    print(f'Success. inserted {filepath} data')
+    #print(f'Success. inserted {filepath} data')
   except Exception as e:
     db.session.rollback()
-    print(f'failed to insert {filepath} data: {e}')
+    #print(f'failed to insert {filepath} data: {e}')
 
 def seed_txt(filepath, exchange=None):
   try:
@@ -48,7 +48,7 @@ def seed_txt(filepath, exchange=None):
       reader = csv.DictReader(f, delimiter="|")
       rows = [row for row in reader if row.get("Symbol") or row.get("ACT Symbol")]
   except Exception as e:
-    print(f"Failed to read {filepath}: {e}")
+    #print(f"Failed to read {filepath}: {e}")
     return
   
   exchange_map = {
@@ -79,15 +79,15 @@ def seed_txt(filepath, exchange=None):
 
     except Exception as e:
       db.session.rollback()
-      print(f"Failed to insert row {row}: {e}")
+      #print(f"Failed to insert row {row}: {e}")
       break
 
   try:
     db.session.commit()
-    print(f"Success: inserted data from {filepath}")
+    #print(f"Success: inserted data from {filepath}")
   except Exception as e:
     db.session.rollback()
-    print(f"Failed commit for {filepath}: {e}")
+    #print(f"Failed commit for {filepath}: {e}")
 
 if __name__ == "__main__":
   app = create_app()
