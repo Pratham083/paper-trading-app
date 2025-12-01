@@ -28,8 +28,13 @@ services:
     dockerfilePath: ./nginx/Dockerfile
     dockerContext: .
     envVars:
-      # Pass the backend's public hostname to the frontend build
       - key: VITE_API_URL
+        fromService:
+          name: paper-trading-backend
+          type: web
+          property: host
+      # Pass the backend's public hostname to the frontend build
+      - key: BACKEND_URL
         fromService:
           name: paper-trading-backend
           type: web

@@ -10,8 +10,10 @@ RUN npm run build
 # Stage 2: Setup Nginx reverse proxy
 FROM nginx:alpine
 
+RUN apk add --no-cache gettext
+
 # Copy Nginx config
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf.template
 
 # Copy SSL certs
 # COPY nginx/certs/ /etc/ssl/certs/
@@ -19,6 +21,11 @@ COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 # Copy the built frontend static files to the Nginx root directory
 COPY --from=build /app/dist /app/dist
 
+RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
+    echo 'envsubst "\$PORT \$BACKEND_URL" < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf' >> /docker-entrypoint.sh && \
+    echo 'exec nginx -g "daemon off;"' >> /docker-entrypoint.sh && \
+    chmod +x /docker-entrypoint.sh
+
 EXPOSE 8080
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/docker-entrypoint.sh"]
