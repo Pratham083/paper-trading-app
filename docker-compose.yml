@@ -21,21 +21,29 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg2://pratham:password@postgres:5432/paper_trading_db
       FLASK_CONFIG: prod
+      FRONTEND_URL: https://localhost
     depends_on:
       - postgres
-    ports:
-      - "5000:5000"
 
   frontend:
     build:
       context: .
-      args:
-        VITE_API_URL: http://backend:5000
       dockerfile: frontend.Dockerfile
+      args:
+        VITE_API_URL: https://localhost
     container_name: paper_frontend
-    ports:
-      - "4173:4173"
     depends_on:
+      - backend
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: paper_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
       - backend
 
 volumes:
