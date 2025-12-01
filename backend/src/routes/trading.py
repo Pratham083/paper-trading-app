@@ -224,6 +224,7 @@ def leaderboard():
       for row in all_ranks
     ]
     daily_cache['user_ranks'] = {row['user_id']: row for row in daily_cache['leaderboard']}
+    daily_cache['date'] = today
 
   leaderboard_data = daily_cache['leaderboard']
   cur_page = leaderboard_data[offset:offset+size]

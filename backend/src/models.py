@@ -78,7 +78,11 @@ class Stock(db.Model):
   )
 
   def refresh_data(self, commit=True):
-    if datetime.now(timezone.utc) - self.last_updated > timedelta(minutes=15) or self.last_sale is None:
+    lu = self.last_updated
+    if lu.tzinfo is None:
+        lu = lu.replace(tzinfo=timezone.utc)
+
+    if datetime.now(timezone.utc) - lu > timedelta(minutes=15) or self.last_sale is None:
       stock_data = fetch_stock_details(self.symbol)
 
       for key, value in stock_data.items():

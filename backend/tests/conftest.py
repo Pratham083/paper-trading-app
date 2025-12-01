@@ -3,17 +3,15 @@ from src.app import create_app
 from src.extensions import db as _db
 from src.models import User, Portfolio, Stock
 from flask_jwt_extended import create_access_token
+from src.config import TestConfig
+import subprocess
+import time
+import signal
+import os
 
 @pytest.fixture(scope='function')
 def app():
-  app = create_app()
-  app.config.update(
-    TESTING=True,
-    SQLALCHEMY_DATABASE_URI='sqlite:///:memory:',
-    JWT_COOKIE_SECURE=False,
-    WTF_CSRF_ENABLED=False,
-    JWT_COOKIE_CSRF_PROTECT=False
-  )
+  app = create_app(TestConfig)
   with app.app_context():
     _db.create_all()
     yield app
@@ -27,10 +25,8 @@ def client(app):
 @pytest.fixture
 def auth_client(app, test_user, access_token):
   client = app.test_client()
-  client.set_cookie(
-    key="access_token_cookie",
-    value=access_token,
-  )
+  #client.set_cookie(key="access_token_cookie",value=access_token)
+  client.environ_base["HTTP_AUTHORIZATION"] = f"Bearer {access_token}"
   return client
 
 @pytest.fixture
@@ -40,7 +36,7 @@ def db(app):
 @pytest.fixture
 def test_user(db):
   user = User(username="test",email="test@p.com")
-  user.set_password("1234")
+  user.set_password("12345678")
   user.portfolio = Portfolio(balance=100000, total_deposited=100000)
   db.session.add(user)
   db.session.commit()
@@ -56,3 +52,36 @@ def sample_stock(db):
   db.session.add(stock)
   db.session.commit()
   return stock
+
+@pytest.fixture(scope="session", autouse=True)
+def start_servers():
+  flask_env = os.environ.copy()
+  flask_env["FLASK_APP"] = "src/app.py"
+  flask_proc = subprocess.Popen(
+    ["flask", "run"],
+    env=flask_env,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    preexec_fn=os.setsid
+  )
+
+  react_proc = subprocess.Popen(
+    ["npm", "run", "dev"],
+    cwd="../frontend",
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    preexec_fn=os.setsid
+  )
+  time.sleep(6)
+  yield
+  for proc in (flask_proc, react_proc):
+    try:
+      os.killpg(os.getpgid(proc.pid), signal.SIGINT)
+    except ProcessLookupError:
+      pass
+  time.sleep(1)
+
+  for proc in (flask_proc, react_proc):
+    if proc.poll() is None:
+      proc.kill()
+      proc.wait(timeout=5)

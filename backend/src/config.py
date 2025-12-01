@@ -30,3 +30,10 @@ class DevConfig(Config):
 class ProdConfig(Config):
   DEBUG = False
   JWT_COOKIE_SECURE = True
+
+class TestConfig(Config):
+  TESTING = True
+  SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+  WTF_CSRF_ENABLED = False
+  JWT_TOKEN_LOCATION = ["headers"]
+  JWT_COOKIE_SECURE = False

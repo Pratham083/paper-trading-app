@@ -43,14 +43,17 @@ const Home = () => {
     getProfile();
   }, [isAuthenticated]);
   const getNet = (portfolio) => {
-    const holdings = portfolio.holdings;
     const balance = portfolio.balance;
     const total_deposited = portfolio.total_deposited;
+    let assetValue = getAssetValue(portfolio.holdings);
+    return balance + assetValue - total_deposited;
+  }
+  const getAssetValue = (holdings) => {
     let assetValue = 0;
     holdings.forEach((holding) => {
       assetValue += (holding.quantity * holding.stock.last_sale);
     })
-    return balance + assetValue - total_deposited;
+    return assetValue;
   }
   const percent =user.total_deposited !== 0 ? (user.net * 100)/user.total_deposited: 0;
 
@@ -65,8 +68,13 @@ const Home = () => {
             </h2>
 
             <h3 className="text-2xl mt-4 text-text">
+              Portfolio value:{" "}
+              <span className="font-semibold">${formatNumber(user.balance + getAssetValue(user.holdings))}</span>
+            </h3>
+
+            <h3 className="text-2xl mt-2 text-text">
               Balance:{" "}
-              <span className="font-semibold">${user.balance.toFixed(2)}</span>
+              <span className="font-semibold">${formatNumber(user.balance)}</span>
             </h3>
 
             <h4 className="text-xl mt-2">

@@ -42,7 +42,7 @@ export default function Leaderboard() {
   };
   return (
     <div className="min-h-screen bg-background px-6 py-10 text-text flex flex-col items-center">
-      <h1 className="text-4xl font-bold mb-6 text-center">Leaderboard</h1>
+      <h1 className="text-4xl font-bold mb-6 text-center">Today's Leaderboard</h1>
 
       {isAuthenticated && (
         <div className="text-center mb-6 text-lg">
