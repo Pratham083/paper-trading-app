@@ -5,9 +5,19 @@ from src.config import DevConfig, TestConfig, ProdConfig
 from src.errors import register_error_handlers
 from src.routes import register_routes
 from flask_migrate import Migrate
+import os
 
-def create_app(config_class=DevConfig):
+def create_app(config_class=None):
   app = Flask(__name__)
+
+  config_name = os.getenv("FLASK_CONFIG", "dev").lower()
+  if config_class is None:
+    if config_name == "test":
+      config_class = TestConfig
+    elif config_name == "prod":
+      config_class = ProdConfig
+    else:
+      config_class = DevConfig
   
   app.config.from_object(config_class)
 

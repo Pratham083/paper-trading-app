@@ -19,4 +19,4 @@ jobs:
         run: pip install flake8
 
       - name: Run Flake8
-        run: flake8 app.py
+        run: flake8 backend/src/app.py
