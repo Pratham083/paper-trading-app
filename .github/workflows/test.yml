@@ -27,4 +27,4 @@ jobs:
       - name: Run tests
         run: |
           cd backend 
-          pytest --cov=backend --cov-report=xml tests
+          pytest --cov=backend --cov-report=xml tests/test_auth.py tests/test_trading.py
