@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 from src.extensions import db, jwt
 from src.config import DevConfig, TestConfig, ProdConfig
@@ -35,6 +35,14 @@ def create_app(config_class=None):
     supports_credentials=True,
     origins=[FRONTEND_URL]
   )
+
+  @app.route('/debug/cors')
+  def debug_cors():
+    return {
+        'frontend_url_env': os.getenv('FRONTEND_URL'),
+        'allowed_origins': [os.getenv('FRONTEND_URL', 'http://localhost:5173')],
+        'request_origin': request.headers.get('Origin')
+    }
   
   register_routes(app)
   register_error_handlers(app)
