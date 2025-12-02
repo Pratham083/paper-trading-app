@@ -21,11 +21,14 @@ COPY nginx/default.conf /etc/nginx/conf.d/default.conf.template
 # Copy the built frontend static files to the Nginx root directory
 COPY --from=build /app/dist /app/dist
 
-# Update the RUN block that creates /docker-entrypoint.sh:
+# Update the RUN block in your nginx/Dockerfile:
 RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
     echo 'set -x' >> /docker-entrypoint.sh && \
     echo 'echo "Original BACKEND_URL: $BACKEND_URL"' >> /docker-entrypoint.sh && \
-    echo '# Add https:// prefix if not present' >> /docker-entrypoint.sh && \
+    echo '# Ensure it has full .onrender.com domain and https://' >> /docker-entrypoint.sh && \
+    echo 'if [[ ! $BACKEND_URL =~ \\.onrender\\.com$ ]]; then' >> /docker-entrypoint.sh && \
+    echo '  BACKEND_URL="${BACKEND_URL}.onrender.com"' >> /docker-entrypoint.sh && \
+    echo 'fi' >> /docker-entrypoint.sh && \
     echo 'if [[ ! $BACKEND_URL =~ ^https?:// ]]; then' >> /docker-entrypoint.sh && \
     echo '  BACKEND_URL="https://${BACKEND_URL}"' >> /docker-entrypoint.sh && \
     echo 'fi' >> /docker-entrypoint.sh && \
