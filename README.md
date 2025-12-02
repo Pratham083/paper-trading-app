@@ -6,7 +6,7 @@ Watch my demo here: [https://youtu.be/r5PAdysW9wM](https://youtu.be/r5PAdysW9wM)
 
 ## Setup (Run locally on your machine)
 
-### Option 1: Docker (recommended)
+Ensure you have docker installed on your machine.
 1. Download the repo as a zip file and extract
 2. Open the terminal, cd into the paper-trading-app folder
 3. In the terminal run: docker-compose up --build
@@ -14,23 +14,6 @@ Watch my demo here: [https://youtu.be/r5PAdysW9wM](https://youtu.be/r5PAdysW9wM)
   - It may take a few minutes to get ready
   - Firefox gave me trouble personally, I think because of the self-signed certs. It gave a 502 gateway error. But Chrome/Edge should work.
 
-### Option 2: Install dependencies manually (works for Ubuntu/WSL2)
-Note: you need postgres setup on your machine
-1. After installing, cd backend/
-2. run in the terminal:
-- python3.12 -m venv venv
-- source venv/bin/activate
-- pip install -r requirements.txt
-- export FLASK_APP=src.app
-- flask db upgrade
-- python -m src.utils.seed
-- flask run
-
-3. In another terminal, run:
-- cd ../frontend
-- npm install
-- npm run dev
-  - open the link it responds with, the app should work now
 
 ## Endpoints
 
