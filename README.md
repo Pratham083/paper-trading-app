@@ -10,9 +10,7 @@ This app is designed to allow users to:
 ## Demo video
 **Demo on localhost**: [https://youtu.be/r5PAdysW9wM](https://youtu.be/r5PAdysW9wM)
 
-## Setup (Run locally on your machine)
-
-Ensure you have docker installed on your machine.
+## Local Setup (Docker)
 1. Download the **main branch** a zip file and extract
 2. Open the terminal, cd into the paper-trading-app folder
 3. In the terminal, run: docker-compose up --build
@@ -134,26 +132,19 @@ This app follows a microservices architechture for the deployment. Frontend is s
 ## Tech Stack
 
 ### Frontend
-React and TailwindCSS
+React + TailwindCSS
 
 ### Backend
 Flask + some helper libraries:
-- **SQLAlchemy** models for database tables
-- **Marshmallow** for validation and serialization
-- **flask-jwt-extended** for authentication
-- **Werkzeug security** for password hashing
-- **yfinance** to fetch stock data (external API)
+- SQLAlchemy
+- Marshmallow
+- flask-jwt-extended
+- Werkzeug security
+- yfinance (external API)
 
 ### Database
-- **PostgreSQL** for DEV and PROD
-- **SQLite (in-memory)** for unit tests
-
-### Infrastructure
-Containerized using Docker:
-- One container for the Flask backend
-- One for the React build (final static files served by NGINX)
-- One for the PostgreSQL database
-- NGINX enables HTTPS, routes traffic and serves frontend assets
+- PostgreSQL for DEV and PROD
+- SQLite (in-memory) for unit tests
 
 
 ## Auth & Security
@@ -167,4 +158,4 @@ To deploy this app, I had to make some modifications to the docker setup. I depl
 
 I put the deployment code in the render-deploy branch. The docker setup on render-deploy differs from the main branch due to Render's configuration. On the live version the frontend is served as a static file, and the backend is served separately. On localhost, it's all runs together in the Dockerfile and uses NGINX to serve the frontend static files.
 
-You can access it at this link: [https://paper-trading-frontend-z8xl.onrender.com/](https://paper-trading-frontend-z8xl.onrender.com/)
+You can access it at this link:[https://paper-trading-app-zjpg.onrender.com/](https://paper-trading-app-zjpg.onrender.com/)
