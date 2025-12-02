@@ -21,11 +21,18 @@ COPY nginx/default.conf /etc/nginx/conf.d/default.conf.template
 # Copy the built frontend static files to the Nginx root directory
 COPY --from=build /app/dist /app/dist
 
-# 3. Create the entrypoint script (CORRECTED VERSION)
+# Update the RUN block that creates /docker-entrypoint.sh:
 RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
-    echo 'echo "Substituting BACKEND_URL: ${BACKEND_URL}"' >> /docker-entrypoint.sh && \
+    echo 'set -x' >> /docker-entrypoint.sh && \
+    echo 'echo "Original BACKEND_URL: $BACKEND_URL"' >> /docker-entrypoint.sh && \
+    echo '# Add https:// prefix if not present' >> /docker-entrypoint.sh && \
+    echo 'if [[ ! $BACKEND_URL =~ ^https?:// ]]; then' >> /docker-entrypoint.sh && \
+    echo '  BACKEND_URL="https://${BACKEND_URL}"' >> /docker-entrypoint.sh && \
+    echo 'fi' >> /docker-entrypoint.sh && \
+    echo 'echo "Final BACKEND_URL: $BACKEND_URL"' >> /docker-entrypoint.sh && \
     echo 'envsubst "\$BACKEND_URL" < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf' >> /docker-entrypoint.sh && \
-    echo 'echo "Starting nginx..."' >> /docker-entrypoint.sh && \
+    echo 'echo "Generated config:"' >> /docker-entrypoint.sh && \
+    echo 'cat /etc/nginx/conf.d/default.conf' >> /docker-entrypoint.sh && \
     echo 'exec nginx -g "daemon off;"' >> /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh
 
