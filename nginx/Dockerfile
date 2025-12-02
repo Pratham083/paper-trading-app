@@ -37,6 +37,10 @@ RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
     echo 'envsubst "\$BACKEND_URL \$PORT" < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf' >> /docker-entrypoint.sh && \
     echo 'echo "Generated config:"' >> /docker-entrypoint.sh && \
     echo 'cat /etc/nginx/conf.d/default.conf' >> /docker-entrypoint.sh && \
+    echo '# Wait for Nginx to stabilize' >> /docker-entrypoint.sh && \
+    echo 'sleep 3' >> /docker-entrypoint.sh && \
+    echo 'nginx -t' >> /docker-entrypoint.sh && \
+    echo 'nginx -s reload 2>/dev/null || true' >> /docker-entrypoint.sh && \
     echo 'exec nginx -g "daemon off;"' >> /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh
 
