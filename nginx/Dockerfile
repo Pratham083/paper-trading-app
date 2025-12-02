@@ -30,7 +30,7 @@ RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
     echo '  BACKEND_URL="${BACKEND_URL}.onrender.com"' >> /docker-entrypoint.sh && \
     echo 'fi' >> /docker-entrypoint.sh && \
     echo 'if [[ ! $BACKEND_URL =~ ^https?:// ]]; then' >> /docker-entrypoint.sh && \
-    echo '  BACKEND_URL="http://${BACKEND_URL}"' >> /docker-entrypoint.sh && \
+    echo '  BACKEND_URL="https://${BACKEND_URL}"' >> /docker-entrypoint.sh && \
     echo 'fi' >> /docker-entrypoint.sh && \
     echo 'echo "Final BACKEND_URL: $BACKEND_URL"' >> /docker-entrypoint.sh && \
     echo 'envsubst "\$BACKEND_URL" < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf' >> /docker-entrypoint.sh && \

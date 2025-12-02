@@ -18,6 +18,8 @@ services:
           name: paper-trading-frontend
           type: web
           property: host
+      - key: FLASK_CONFIG
+        value: "prod"
     healthCheckPath: /health
 
   # 2. Your Nginx + React Frontend Service
