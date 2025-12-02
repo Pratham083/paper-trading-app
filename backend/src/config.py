@@ -30,6 +30,9 @@ class DevConfig(Config):
 class ProdConfig(Config):
   DEBUG = False
   JWT_COOKIE_SECURE = True
+  JWT_COOKIE_SAMESITE = "None"
+  JWT_COOKIE_CSRF_PROTECT = True
+  JWT_SESSION_COOKIE = False
 
 class TestConfig(Config):
   TESTING = True
