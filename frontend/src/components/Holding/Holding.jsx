@@ -7,9 +7,9 @@ const Holding = ({ quantity, symbol, company, prev_close, last_sale, book_cost, 
     prev_close = last_sale;
   }
 
-  const net = allTime ? Math.round(((quantity*last_sale) - book_cost) * 100)/100
+  const net = allTime ? Math.round((last_sale - book_cost/quantity) * 100)/100
     : Math.round((last_sale - prev_close) * 100) / 100;
-  const percentChange = allTime ? Math.round((10000 * net) / book_cost)/100
+  const percentChange = allTime ? Math.round((10000*quantity*net) / (book_cost))/100
     : Math.round((10000 * net)/prev_close)/100;
   const isPositive = percentChange >= 0;
 
