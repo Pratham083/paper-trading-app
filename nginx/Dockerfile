@@ -37,6 +37,7 @@ RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
     echo 'echo "Generated config:"' >> /docker-entrypoint.sh && \
     echo 'cat /etc/nginx/conf.d/default.conf' >> /docker-entrypoint.sh && \
     echo 'exec nginx -g "daemon off;"' >> /docker-entrypoint.sh && \
+    echo 'envsubst "\$BACKEND_URL \$PORT" < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf' >> /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh
 
 EXPOSE 8080
