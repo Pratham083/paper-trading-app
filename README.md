@@ -2,7 +2,7 @@
 This app is designed to allow users to simulate trading stocks with fake money. You can also use it to view analytics of stocks. There is also a leaderboard where you can view the users with the most money and view their portfolios. It is deployed on this link: [https://paper-trading-frontend-z8xl.onrender.com/](https://paper-trading-frontend-z8xl.onrender.com/)
 
 ## Demo video
-
+Watch my demo here: [https://youtu.be/r5PAdysW9wM](https://youtu.be/r5PAdysW9wM)
 
 ## Setup (Run locally on your machine)
 
