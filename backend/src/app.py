@@ -26,9 +26,8 @@ def create_app(config_class=None):
   jwt.init_app(app)
 
   FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
-  
-  if not FRONTEND_URL.startswith(('http://', 'https://')):
-    FRONTEND_URL = f"https://{FRONTEND_URL}"
+  FRONTEND_URL = FRONTEND_URL if FRONTEND_URL.startswith('http') else f"https://{FRONTEND_URL}.onrender.com"
+  print('FRONTEND_URL:', FRONTEND_URL)
 
   CORS(
     app,
