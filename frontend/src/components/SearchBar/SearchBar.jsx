@@ -58,15 +58,15 @@ const SearchBar = () => {
       return;
     }
 
-    let filtered = symbols.filter(item =>
+    let filtered = symbols ? symbols.filter(item =>
       item.symbol.toUpperCase().startsWith(term)
-    );
+    ) : [];
 
     if (filtered.length < resultSize) {
-      const secondary = symbols.filter(item =>
+      const secondary = symbols ? symbols.filter(item =>
         item.company.toUpperCase().includes(term) &&
         !item.symbol.toUpperCase().startsWith(term)
-      );
+      ) : [];
 
       filtered = filtered.concat(secondary);
     }
