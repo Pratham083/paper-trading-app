@@ -13,7 +13,7 @@ services:
           property: connectionString
       # Reference the eventual public URL of your Nginx frontend
       - key: FRONTEND_URL
-        value: "https://your-new-static-site.onrender.com"
+        value: "https://paper-trading-app-zjpg.onrender.com"
       - key: FLASK_CONFIG
         value: "prod"
     healthCheckPath: /health
