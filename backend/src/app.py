@@ -25,10 +25,11 @@ def create_app(config_class=None):
   migrate = Migrate(app, db)
   jwt.init_app(app)
 
+  FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+  
   if not FRONTEND_URL.startswith(('http://', 'https://')):
     FRONTEND_URL = f"https://{FRONTEND_URL}"
 
-  FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
   CORS(
     app,
     supports_credentials=True,
