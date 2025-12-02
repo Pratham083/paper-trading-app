@@ -33,6 +33,7 @@ class ProdConfig(Config):
   JWT_COOKIE_SAMESITE = "None"
   JWT_COOKIE_CSRF_PROTECT = True
   JWT_SESSION_COOKIE = False
+  JWT_COOKIE_PARTITIONED = True
 
 class TestConfig(Config):
   TESTING = True
