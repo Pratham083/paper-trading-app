@@ -12,8 +12,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    #ports:
-    #  - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -24,7 +22,7 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg2://pratham:password@postgres:5432/paper_trading_db
       FLASK_CONFIG: prod
-      FRONTEND_URL: ${RENDER_EXTERNAL_URL:-https://localhost}
+      FRONTEND_URL: http://localhost:5173
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
       interval: 30s
@@ -33,20 +31,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-
-  nginx:
-    build:
-      context: .
-      dockerfile: ./nginx/Dockerfile
-      args:
-        VITE_API_URL: ${RENDER_EXTERNAL_URL:-https://localhost}
-    #ports:
-    #  - "80:80"
-    #  - "443:443"
-    depends_on:
-      - backend
-    expose:
-      - "8080"
 
 volumes:
   pgdata:

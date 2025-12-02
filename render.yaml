@@ -1,5 +1,4 @@
 services:
-  # 1. Your Flask Backend Service
   - type: web
     name: paper-trading-backend
     runtime: docker
@@ -7,42 +6,18 @@ services:
     dockerfilePath: backend.Dockerfile
     dockerContext: .
     envVars:
-      # Render will automatically inject the DATABASE_URL for your PostgreSQL instance
+      # Render will automatically inject the DATABASE_URL
       - key: DATABASE_URL
         fromDatabase:
           name: paper-trading-db
           property: connectionString
       # Reference the eventual public URL of your Nginx frontend
       - key: FRONTEND_URL
-        fromService:
-          name: paper-trading-frontend
-          type: web
-          property: host
+        value: "https://your-new-static-site.onrender.com"
       - key: FLASK_CONFIG
         value: "prod"
     healthCheckPath: /health
 
-  # 2. Your Nginx + React Frontend Service
-  - type: web
-    name: paper-trading-frontend
-    runtime: docker
-    plan: free
-    dockerfilePath: ./nginx/Dockerfile
-    dockerContext: .
-    envVars:
-      - key: VITE_API_URL
-        fromService:
-          name: paper-trading-backend
-          type: web
-          property: host
-      # Pass the backend's public hostname to the frontend build
-      - key: BACKEND_URL
-        fromService:
-          name: paper-trading-backend
-          type: web
-          property: host
-
-# 3. Your PostgreSQL Database
 databases:
   - name: paper-trading-db
     plan: free

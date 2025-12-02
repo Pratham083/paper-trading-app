@@ -11,7 +11,7 @@ COPY backend/ /app
 
 ENV FLASK_APP=src.app
 ENV FLASK_CONFIG=prod
-ENV FRONTEND_URL=https://localhost
+ENV FRONTEND_URL=http://localhost:5173
 
 # Copy entrypoint script
 COPY backend/entrypoint.sh /app/entrypoint.sh
