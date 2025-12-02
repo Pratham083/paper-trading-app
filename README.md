@@ -1,5 +1,10 @@
 # Full Stack Paper Trading App
-This app is designed to allow users to simulate trading stocks with fake money. You can also use it to view analytics of stocks. There is also a leaderboard where you can view the users with the most money and view their portfolios. It is deployed on this link: [https://paper-trading-frontend-z8xl.onrender.com/](https://paper-trading-frontend-z8xl.onrender.com/)
+This app is designed to allow users to:
+- simulate stock trading 
+- view analytics of stocks
+- view other users' portfolios
+- view a leaderboard to see the ranks of all the users
+It is deployed on this link: [https://paper-trading-frontend-z8xl.onrender.com/](https://paper-trading-frontend-z8xl.onrender.com/)
 
 ## Demo video
 Watch my demo here: [https://youtu.be/r5PAdysW9wM](https://youtu.be/r5PAdysW9wM)
@@ -7,12 +12,12 @@ Watch my demo here: [https://youtu.be/r5PAdysW9wM](https://youtu.be/r5PAdysW9wM)
 ## Setup (Run locally on your machine)
 
 Ensure you have docker installed on your machine.
-1. Download the repo as a zip file and extract
+1. Download the **main branch** a zip file and extract
 2. Open the terminal, cd into the paper-trading-app folder
-3. In the terminal run: docker-compose up --build
-4. When the build completes, open Chrome/Edge to https://localhost
+3. In the terminal, run: docker-compose up --build
+4. When the build completes, open Chrome/Edge to https://localhost (this is the frontend)
   - It may take a few minutes to get ready
-  - Firefox gave me trouble personally, I think because of the self-signed certs. It gave a 502 gateway error. But Chrome/Edge should work.
+  - Firefox gave me trouble (502 gateway error) likely due to self-signed certs. But Chrome/Edge will work.
 
 
 ## Endpoints
