@@ -21,10 +21,11 @@ COPY nginx/default.conf /etc/nginx/conf.d/default.conf.template
 # Copy the built frontend static files to the Nginx root directory
 COPY --from=build /app/dist /app/dist
 
-# Create a simple startup script
+# 3. Create the entrypoint script (CORRECTED VERSION)
 RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
-    echo 'envsubst "\$BACKEND_URL" < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf.tmp' >> /docker-entrypoint.sh && \
-    echo 'mv /etc/nginx/conf.d/default.conf.tmp /etc/nginx/conf.d/default.conf' >> /docker-entrypoint.sh && \
+    echo 'echo "Substituting BACKEND_URL: ${BACKEND_URL}"' >> /docker-entrypoint.sh && \
+    echo 'envsubst "\$BACKEND_URL" < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf' >> /docker-entrypoint.sh && \
+    echo 'echo "Starting nginx..."' >> /docker-entrypoint.sh && \
     echo 'exec nginx -g "daemon off;"' >> /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh
 
