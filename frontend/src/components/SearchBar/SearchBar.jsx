@@ -10,6 +10,7 @@ const SearchBar = () => {
   const [filteredSymbols, setFilteredSymbols] = useState([]);
   const [showToast, setShowToast] = useState(false);
 
+  /*
   useEffect(() => {
     const fetchSymbols = async () => {
       try {
@@ -47,7 +48,7 @@ const SearchBar = () => {
     } else {
       fetchSymbols();
     }
-  }, []);
+  }, []); */
 
   useEffect(() => {
     const resultSize = 10;
