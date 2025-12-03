@@ -5,7 +5,8 @@ This app is designed to allow users to:
 - view other users' portfolios
 - view a leaderboard to see the ranks of all the users
 - **Live version:** [https://paper-trading-app-zjpg.onrender.com/](https://paper-trading-app-zjpg.onrender.com/)
-  - There may be issues fetching stock data on the server due to the external API yfinance. It is meant for personal use and blocks the request from the server sometimes.
+  - There are some issues fetching stock data on the server due to the external API yfinance. The external API is open source and meant for personal use, so the deployed server gets blocked sometimes.
+  - Testing it locally works 100% however
 
 ## Demo video
 **Demo on localhost**: [https://youtu.be/r5PAdysW9wM](https://youtu.be/r5PAdysW9wM)
@@ -14,9 +15,9 @@ This app is designed to allow users to:
 1. Download the **main branch** a zip file and extract
 2. Open the terminal, cd into the paper-trading-app folder
 3. In the terminal, run: docker-compose up --build
-4. When the build completes, open Chrome/Edge to https://localhost (this is the frontend)
-  - It may take a few minutes to get ready
-  - Firefox gave me trouble (502 gateway error) likely due to self-signed certs. But Chrome/Edge will work.
+4. When the build completes, open https://localhost (this is the frontend)
+  - **If running on windows**, I recommend using Chrome/Edge to access https://localhost
+    - Firefox may give you trouble (502 gateway error) because of the self-signed certs. I did some research and saw that it's likely due to SSL/TLS inspection from Microsoft Defender. Chrome/Edge rely on Windows Certificate Store, and bypasses this issue.
 
 
 ## Endpoints
@@ -24,13 +25,13 @@ This app is designed to allow users to:
 ### Health Route
 
 **GET /health**  
-Returns `{ "status": "ok" }`.
+Returns `{"status": "ok"}`.
 
 ### Auth Routes
 
 #### POST /auth/register  
 Create a new user.  
-Body: `{ username, email, password }`  
+Body: `{username, email, password}`  
 Responses:  
 - 201 = user created  
 - 400 = validation error  
@@ -38,7 +39,7 @@ Responses:
 
 #### POST /auth/login  
 Log in using username **or** email. Sets access + refresh cookies.  
-Body: `{ identifier, password }`  
+Body: `{identifier, password}`  
 Responses:  
 - 200 = success  
 - 400 = validation error  
@@ -52,7 +53,7 @@ Clears JWT cookies.
 
 #### GET /auth/check  
 Checks if the user is authenticated.  
-Returns `{ authenticated: true/false }`.
+Returns `{authenticated: true/false}`.
 
 #### DELETE /auth/account/delete  
 Deletes the authenticated user.  
@@ -62,7 +63,7 @@ Responses:
 
 #### PUT /auth/account/update  
 Update username, email, or password.  
-Body: `{ username, email, new_password, current_password }`  
+Body: `{username, email, new_password, current_password}`  
 Responses:  
 - 200 = updated  
 - 400 = validation error  
@@ -76,7 +77,7 @@ Returns the user’s portfolio including updated holdings.
 
 #### POST /api/holding/buy  
 Buy a stock.  
-Body: `{ stock_id, quantity }`  
+Body: `{stock_id, quantity}`  
 Responses:  
 - 200 = success  
 - 400 = invalid quantity / insufficient funds  
@@ -91,7 +92,7 @@ Responses:
 
 #### POST /api/holding/sell  
 Sell a stock.  
-Body: `{ stock_id, quantity }`  
+Body: `{stock_id, quantity}`  
 Responses:  
 - 200 = success  
 - 400 = not enough shares / invalid quantity  
@@ -101,7 +102,7 @@ Responses:
 ### Stock Routes
 
 #### GET /api/stock/all  
-Returns `{ id, symbol, company }` for all stocks.
+Returns `{id, symbol, company}` for all stocks.
 
 #### GET /api/stock/details/<symbol>  
 Returns full stock details.  
