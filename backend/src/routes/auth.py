@@ -64,11 +64,16 @@ def login():
   set_access_cookies(resp, access)
   set_refresh_cookies(resp, refresh)
 
-  print("--- OUTGOING COOKIE HEADERS ---")
+# 💥 TEMPORARY DEBUG CODE TO INJECT HEADERS INTO RESPONSE BODY 💥
+  debug_cookie_headers = []
+  
   for name, value in resp.headers:
       if name == 'Set-Cookie':
-          # This prints the raw header string, which should contain 'Partitioned'
-          print(f"Set-Cookie Header: {value}")
+          debug_cookie_headers.append(value)
+          
+  response_data = resp.get_json()
+  response_data['DEBUG_COOKIES'] = debug_cookie_headers
+  resp.set_data(jsonify(response_data).data)
 
   return resp, 200
 
