@@ -6,7 +6,11 @@ import time
 import requests
 
 def safe_round(val):
-  return round(val, 2) if isinstance(val, (int, float)) else None
+  try:
+    val = float(val)
+    return round(val, 2)
+  except Exception as e:
+    return None
 
 def fetch_stock_details(symbol, max_tries=3):
   for i in range(max_tries):
@@ -90,6 +94,7 @@ def fetch_alphavantage_details(symbol: str):
   try:
     quote_response = requests.get(base_url, params=quote_params, timeout=10).json()
     quote = quote_response.get("Global Quote", {})
+    print(quote)
     
     if not quote or quote_response.get("Note"):
       return {}
@@ -100,6 +105,8 @@ def fetch_alphavantage_details(symbol: str):
     stock_info['open'] = safe_round(quote.get('02. open'))
     stock_info['prev_close'] = safe_round(quote.get('08. previous close'))
     stock_info['volume'] = safe_round(quote.get('06. volume'))
+
+    print(stock_info)
 
   except requests.exceptions.RequestException as e:
     print(f"Alpha Vantage Quote Request Failed: {e}")
@@ -129,3 +136,5 @@ def fetch_alphavantage_details(symbol: str):
 
 #print('details:', fetch_stock_details('AAPL'))
 #print('history: ',fetch_stock_history('AAPL','1d'))
+
+#print('details:', fetch_alphavantage_details('AAPL'))
