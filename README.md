@@ -9,7 +9,7 @@ This app is designed to allow users to:
   - Testing it locally works 100% however
 
 ## Demo video
-**Demo on localhost**: [https://youtu.be/r5PAdysW9wM](https://youtu.be/r5PAdysW9wM)
+**Demo presentation**: [https://youtu.be/r5PAdysW9wM](https://youtu.be/r5PAdysW9wM)
 
 ## Local Setup (Docker)
 1. Download the **main branch** a zip file and extract
@@ -158,5 +158,6 @@ Both unit tests and end-to-end tests were implemented. Pytest was used for unit 
 To deploy this app, I had to make some modifications to the docker setup. I deployed it on a service called **Render** (free version).
 
 I put the deployment code in the render-deploy branch. The docker setup on render-deploy differs from the main branch due to Render's configuration. On the live version the frontend is served as a static file, and the backend is served separately. On localhost, it's all runs together in the Dockerfile and uses NGINX to serve the frontend static files.
+
 
 You can access it at this link:[https://paper-trading-app-zjpg.onrender.com/](https://paper-trading-app-zjpg.onrender.com/)
