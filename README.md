@@ -4,10 +4,10 @@ This app is designed to allow users to:
 - view analytics of stocks
 - view other users' portfolios
 - view a leaderboard to see the ranks of all the users
-- **Live version:** [https://paper-trading-app-zjpg.onrender.com/](https://paper-trading-app-zjpg.onrender.com/)
-  - You may need to wait ~1-2 minutes for the frontend and backend to startup. When it's inactive the service goes to sleep because I am using free tier.  
-  - There are some issues fetching stock data on the server due to the external API yfinance. The external API is open source and meant for personal use, so the deployed server gets blocked sometimes.
-  - Testing it locally works 100% however
+- **Deployed version:** [https://paper-trading-app-zjpg.onrender.com/](https://paper-trading-app-zjpg.onrender.com/)
+  - You will probably need to wait ~2-3 minutes for the backend to startup. While the backend is asleep, the frontend requests will be delayed. When the site is inactive the service goes to sleep because I am using free tier. 
+  - On the deployed version, the external API YFinance often blocks requests. I am using the Alphavantage API as a backup when YFinance fails, but keep in mind it has heavy rate limiting (5 requests/minute, 25 requests/day). YFinance does not block requests locally, so you will not experience rate limits when running the app on localhost.
+  - **The deployed code is on the branch render-branch**
 
 ## Demo video
 **Demo presentation**: [https://youtu.be/r5PAdysW9wM](https://youtu.be/r5PAdysW9wM)
@@ -169,6 +169,7 @@ To deploy this app, I had to make some modifications to the docker setup. I depl
 I put the deployment code in the render-deploy branch. The docker setup on render-deploy differs from the main branch due to Render's configuration. On the live version the frontend is served as a static file, and the backend is served separately. On localhost, it's all runs together in the Dockerfile and uses NGINX to serve the frontend static files.
 
 
-You can access it at this link:[https://paper-trading-app-zjpg.onrender.com/](https://paper-trading-app-zjpg.onrender.com/)
+You can access the live version at this link:[https://paper-trading-app-zjpg.onrender.com/](https://paper-trading-app-zjpg.onrender.com/)
+
 
 
