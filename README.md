@@ -5,6 +5,7 @@ This app is designed to allow users to:
 - view other users' portfolios
 - view a leaderboard to see the ranks of all the users
 - **Live version:** [https://paper-trading-app-zjpg.onrender.com/](https://paper-trading-app-zjpg.onrender.com/)
+  - You may need to wait ~1-2 minutes for the frontend and backend to startup. When it's inactive the service goes to sleep because I am using free tier.  
   - There are some issues fetching stock data on the server due to the external API yfinance. The external API is open source and meant for personal use, so the deployed server gets blocked sometimes.
   - Testing it locally works 100% however
 
@@ -169,4 +170,5 @@ I put the deployment code in the render-deploy branch. The docker setup on rende
 
 
 You can access it at this link:[https://paper-trading-app-zjpg.onrender.com/](https://paper-trading-app-zjpg.onrender.com/)
+
 
