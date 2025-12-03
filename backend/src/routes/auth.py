@@ -68,8 +68,10 @@ def login():
   resp.headers.remove("Set-Cookie")
 
   for value in cookies:
-    if "samesite=none" in value.lower() and "partitioned" not in value.lower():
-      value = value + "; Partitioned"
+    low = value.lower()
+    if "samesite=none" in low and "partitioned" not in low:
+      if "csrf" not in low:
+        value += "; Partitioned"
     resp.headers.add("Set-Cookie", value)
 
   return resp, 200
