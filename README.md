@@ -12,7 +12,7 @@ This app is designed to allow users to:
 **Demo presentation**: [https://youtu.be/r5PAdysW9wM](https://youtu.be/r5PAdysW9wM)
 
 ## Local Setup (Docker)
-1. Download the **main branch** a zip file and extract
+1. Download the **main branch** as a zip file and extract
 2. Open the terminal, cd into the paper-trading-app folder
 3. In the terminal, run: docker-compose up --build
 4. When the build completes, open https://localhost (this is the frontend)
@@ -161,3 +161,4 @@ I put the deployment code in the render-deploy branch. The docker setup on rende
 
 
 You can access it at this link:[https://paper-trading-app-zjpg.onrender.com/](https://paper-trading-app-zjpg.onrender.com/)
+
