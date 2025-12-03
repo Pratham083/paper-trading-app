@@ -127,7 +127,15 @@ Response fields: `page, size, total_pages, total_users, top_users, my_rank`
 ## Architechtural Design
 This app follows a microservices architechture for the deployment. Frontend is served as a static site and backend is hosted on a separate server.
 
-### Backend UML
+### Main branch Architechture
+Note: the main branch works on localhost
+![main branch uml](./docs/localhost-diagram.png)
+
+### Render-deploy Branch Architechture
+Note: the render-deploy branch is used for the live version.
+![Render deploy uml](./docs/deployment-diagram.png)
+
+### Backend/DB UML
 ![Backend uml](./docs/UML-backend.png)
 
 ## Tech Stack
