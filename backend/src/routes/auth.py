@@ -64,10 +64,13 @@ def login():
   set_access_cookies(resp, access)
   set_refresh_cookies(resp, refresh)
 
-  for i, (name, value) in enumerate(resp.headers):
-    if name == 'Set-Cookie' and 'Partitioned' not in value:
-      resp.headers.pop(i)
-      resp.headers.add('Set-Cookie', value + '; Partitioned')
+  headers_to_modify = list(resp.headers.items()) 
+    
+  for name, value in headers_to_modify:
+    if name.lower() == 'set-cookie' and 'partitioned' not in value.lower():
+      if 'samesite=none' in value.lower():
+        resp.headers.remove('Set-Cookie', value) 
+        resp.headers.add('Set-Cookie', value + '; Partitioned')
 
   return resp, 200
 
