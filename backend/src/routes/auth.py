@@ -64,6 +64,12 @@ def login():
   set_access_cookies(resp, access)
   set_refresh_cookies(resp, refresh)
 
+  print("--- OUTGOING COOKIE HEADERS ---")
+  for name, value in resp.headers:
+      if name == 'Set-Cookie':
+          # This prints the raw header string, which should contain 'Partitioned'
+          print(f"Set-Cookie Header: {value}")
+
   return resp, 200
 
 @auth_bp.post("/refresh")

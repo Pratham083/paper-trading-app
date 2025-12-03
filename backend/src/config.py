@@ -35,29 +35,6 @@ class ProdConfig(Config):
   JWT_SESSION_COOKIE = False
   JWT_COOKIE_PARTITIONED = True
 
-  JWT_ACCESS_COOKIE_OPTIONS = {
-      "secure": True,
-      "samesite": "None",
-      "httponly": True,
-      "partitioned": True,  # Explicit for access cookie
-  }
-  JWT_REFRESH_COOKIE_OPTIONS = {
-      "secure": True,
-      "samesite": "None",
-      "httponly": True,
-      "partitioned": True,  # Explicit for refresh cookie
-  }
-  JWT_ACCESS_CSRF_COOKIE_OPTIONS = {
-      "secure": True,
-      "samesite": "None",
-      "partitioned": True,  # CSRF cookies too
-  }
-  JWT_REFRESH_CSRF_COOKIE_OPTIONS = {
-      "secure": True,
-      "samesite": "None",
-      "partitioned": True,
-  }
-
 class TestConfig(Config):
   TESTING = True
   SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"

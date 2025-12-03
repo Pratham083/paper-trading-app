@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 import pandas as pd
 import numpy as np
 import time
+import requests
 
 def safe_round(val):
   return round(val, 2) if isinstance(val, (int, float)) else None
@@ -32,6 +33,9 @@ def fetch_stock_details(symbol, max_tries=3):
       stock_info['debt'] = safe_round(info.get('totalDebt'))
       break
     time.sleep(0.1)
+
+  if not stock_info.get('last_sale'):
+     stock_info = fetch_alphavantage_details(symbol)
 
   return stock_info
 
@@ -72,6 +76,56 @@ def fetch_stock_history(symbol, period, max_tries=3):
 
   return results
 
+def fetch_alphavantage_details(symbol: str):
+  AV_API_KEY = "BT0AGRTSB20OI4O2"
+
+  base_url = "https://www.alphavantage.co/query"
+  stock_info = {}
+  
+  quote_params = {
+    "function": "GLOBAL_QUOTE",
+    "symbol": symbol,
+    "apikey": AV_API_KEY
+  }
+  try:
+    quote_response = requests.get(base_url, params=quote_params, timeout=10).json()
+    quote = quote_response.get("Global Quote", {})
+    
+    if not quote or quote_response.get("Note"):
+      return {}
+    
+    stock_info['last_sale'] = safe_round(quote.get('05. price'))
+    stock_info['high'] = safe_round(quote.get('03. high'))
+    stock_info['low'] = safe_round(quote.get('04. low'))
+    stock_info['open'] = safe_round(quote.get('02. open'))
+    stock_info['prev_close'] = safe_round(quote.get('08. previous close'))
+    stock_info['volume'] = safe_round(quote.get('06. volume'))
+
+  except requests.exceptions.RequestException as e:
+    print(f"Alpha Vantage Quote Request Failed: {e}")
+    return {}
+
+  overview_params = {
+    "function": "OVERVIEW",
+    "symbol": symbol,
+    "apikey": AV_API_KEY
+  }
+  try:
+    overview_response = requests.get(base_url, params=overview_params, timeout=10).json()
+    
+    if overview_response.get("Note"):
+      print(f"Alpha Vantage Overview Error for {symbol}: {overview_response.get('Note')}")
+    
+    stock_info['pe_ratio'] = safe_round(overview_response.get('PERatio'))
+    stock_info['dividend_yield'] = safe_round(overview_response.get('DividendYield'))
+    stock_info['market_cap'] = safe_round(overview_response.get('MarketCapitalization'))
+    stock_info['revenue'] = safe_round(overview_response.get('RevenueTTM'))
+    stock_info['debt'] = safe_round(overview_response.get('TotalDebt'))
+
+  except requests.exceptions.RequestException as e:
+    print(f"Alpha Vantage request failed: {e}")
+
+  return stock_info
 
 #print('details:', fetch_stock_details('AAPL'))
 #print('history: ',fetch_stock_history('AAPL','1d'))
