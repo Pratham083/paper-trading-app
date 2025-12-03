@@ -69,8 +69,9 @@ def login():
 
   for value in cookies:
     low = value.lower()
+    # Only partition auth cookies, never CSRF
     if "samesite=none" in low and "partitioned" not in low:
-      if "csrf" not in low:
+      if "access_token_cookie" in low or "refresh_token_cookie" in low:
         value += "; Partitioned"
     resp.headers.add("Set-Cookie", value)
 
