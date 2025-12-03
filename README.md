@@ -125,7 +125,7 @@ Includes logged in user’s rank if available.
 Response fields: `page, size, total_pages, total_users, top_users, my_rank`
 
 ## Architechtural Design
-This app follows a microservices architechture for the deployment. Frontend is served as a static site and backend is hosted on a separate server.
+This app follows a microservices architechture (in production). On the live version, frontend and backend are hosted on separate servers.
 
 ### Main branch Architechture
 Note: the main branch works on localhost
