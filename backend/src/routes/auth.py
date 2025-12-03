@@ -64,17 +64,6 @@ def login():
   set_access_cookies(resp, access)
   set_refresh_cookies(resp, refresh)
 
-  cookies = resp.headers.getlist("Set-Cookie")
-  resp.headers.remove("Set-Cookie")
-
-  for value in cookies:
-    low = value.lower()
-    # Only partition auth cookies, never CSRF
-    if "samesite=none" in low and "partitioned" not in low:
-      if "access_token_cookie" in low or "refresh_token_cookie" in low:
-        value += "; Partitioned"
-    resp.headers.add("Set-Cookie", value)
-
   return resp, 200
 
 @auth_bp.post("/refresh")
