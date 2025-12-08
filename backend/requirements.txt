@@ -53,7 +53,7 @@ pdbp==1.8.1
 peewee==3.18.3
 platformdirs==4.5.0
 pluggy==1.6.0
-protobuf==6.33.0
+protobuf==6.33.2
 psycopg2-binary==2.9.11
 PyAutoGUI==0.9.54
 pycodestyle==2.14.0
